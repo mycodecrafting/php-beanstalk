@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 
@@ -38,7 +37,7 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
     public function isTimedOut()
     {
         $info = stream_get_meta_data($this->_socket);
-        return $info['timed_out'];
+        return $this->_socket === false || $info['timed_out'] || feof($this->_socket);
     }
 
     /**
@@ -52,7 +51,7 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
         for ($written = 0, $fwrite = 0; $written < strlen($data); $written += $fwrite)
         {
             $fwrite = fwrite($this->_socket, substr($data, $written));
-            if ($fwrite === false)
+            if ($fwrite === false || ($fwrite === 0 && feof($this->_socket)))
             {
                 return $written;
             }
@@ -70,7 +69,13 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
     {
         do
         {
-            $line = rtrim(fgets($this->_socket));            
+            $line = rtrim(fgets($this->_socket));
+
+            // server must have dropped the connection
+            if ($line === '' && feof($this->_socket))
+            {
+                return false;
+            }
         }
         while ($line === '');
         return $line;

@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 
@@ -18,6 +17,7 @@ class BeanstalkConnection
      * Constructor; establishes connection stream
      *
      * @param string $address Beanstalkd server address in the format "host:port"
+     * @param BeanstalkConnectionStream $stream Stream to use for connection
      * @throws BeanstalkException When a connection cannot be established
      */
     public function __construct($address, BeanstalkConnectionStream $stream)
@@ -38,10 +38,30 @@ class BeanstalkConnection
         list($host, $port) = explode(':', $this->_address);
         if ($this->_stream->open($host, $port) === false)
         {
-            throw new BeanstalkException(sprintf('Cannot connect to server %s', $this->_address));
+            throw new BeanstalkException(sprintf('Cannot connect to server %s', $this->_address), BeanstalkException::SERVER_OFFLINE);
         }
 
         return true;
+    }
+
+    /**
+     * Get the connect's stream
+     *
+     * @return BeanstalkConnectionStream
+     */
+    public function getStream()
+    {
+        return $this->_stream;
+    }
+
+    /**
+     * Get the Beanstalkd server address
+     *
+     * @return string Beanstalkd server address in the format "host:port"
+     */
+    public function getServer()
+    {
+        return $this->_address;
     }
 
     /**
@@ -281,6 +301,18 @@ class BeanstalkConnection
     }
 
     /**
+     * The stats-tube command gives statistical information about the specified tube if it exists.
+     *
+     * @param string $tube is a name at most 200 bytes. Stats will be returned for this tube.
+     * @throws BeanstalkException When the tube does not exist
+     * @return BeanstalkStats
+     */
+    public function statsTube($tube)
+    {
+        return $this->_dispatch(new BeanstalkCommandStatsTube($tube));
+    }
+
+    /**
      * The list-tubes command returns a list of all existing tubes
      */
     public function listTubes()
@@ -302,34 +334,23 @@ class BeanstalkConnection
         return true;
     }
 
-    protected function _dispatch(BeanstalkCommand $command)
-    {
-        $message = $command->getCommand() . "\r\n";
-
-        if (($data = $command->getData()) !== false)
-        {
-            $message .= $data . "\r\n";
-        }
-
-        $this->_stream->write($message);
-        $response = $this->_stream->readLine();
-
-        // common errors
-        $this->validateResponse($response);
-
-		$data = null;
-
-		if ($command->returnsData())
-		{
-			$bytes = preg_replace('/^.*\b(\d+)$/', '$1', $response);
-			$data = $this->_stream->read($bytes);
-		}
-
-        return $command->parseResponse($response, $data, $this);
-    }
-
+    /**
+     * Generic validation for all responses from beanstalkd
+     *
+     * @param string $response
+     * @return boolean true when response is valid
+     * @throws BeanstalkException When response is invalid
+     */
     public function validateResponse($response)
     {
+        if ($response === false)
+        {
+            throw new BeanstalkException(
+                'Error reading data from the server.',
+                BeanstalkException::SERVER_READ
+            );
+        }
+
         if ($response === 'BAD_FORMAT')
         {
             throw new BeanstalkException(
@@ -364,6 +385,41 @@ class BeanstalkConnection
                 BeanstalkException::INTERNAL_ERROR
             );
         }
+
+        return true;
+    }
+
+    /**
+     * Send a command to beanstalkd and return the result
+     *
+     * @param BeanstalkCommand $command
+     * @return mixed Result of BeanstalkCommand::parseResponse()
+     * @throws BeanstalkException
+     */
+    protected function _dispatch(BeanstalkCommand $command)
+    {
+        $message = $command->getCommand() . "\r\n";
+
+        if (($data = $command->getData()) !== false)
+        {
+            $message .= $data . "\r\n";
+        }
+
+        $this->_stream->write($message);
+        $response = $this->_stream->readLine();
+
+        // common errors
+        $this->validateResponse($response);
+
+        $data = null;
+
+        if ($command->returnsData())
+        {
+            $bytes = preg_replace('/^.*\b(\d+)$/', '$1', $response);
+            $data = $this->_stream->read($bytes);
+        }
+
+        return $command->parseResponse($response, $data, $this);
     }
 
 }

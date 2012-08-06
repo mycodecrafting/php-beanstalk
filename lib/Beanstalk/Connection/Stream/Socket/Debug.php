@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 
@@ -20,6 +19,7 @@ class BeanstalkConnectionStreamSocketDebug extends BeanstalkConnectionStreamSock
 
     public function readLine()
     {
+        $this->_out('DEBUG', 'Attempting to read the next line');
         $ret = parent::readLine();
         $this->_out('READ LINE', $ret);
         return $ret;

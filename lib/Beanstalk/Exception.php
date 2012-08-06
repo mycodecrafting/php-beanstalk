@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 
@@ -76,6 +75,16 @@ class BeanstalkException extends Exception
      */
     const UNKNOWN               = 5096;
 
+    /**
+     * @const The server appears to be offline
+     */
+    const SERVER_OFFLINE        = 6001;
+
+    /**
+     * @const There was an error reading from the server
+     */
+    const SERVER_READ           = 6050;
+
     public function __construct($message, $code = 0, Exception $previous = null)
     {
         $this->code = $code;
@@ -105,6 +114,8 @@ class BeanstalkException extends Exception
             case self::INTERNAL_ERROR:      return 'Internal Error';
             case self::BAD_FORMAT:          return 'Bad Format';
             case self::UNKNOWN_COMMAND:     return 'Unknown Command';
+            case self::SERVER_OFFLINE:      return 'Server Offline';
+            case self::SERVER_READ:         return 'Server Read Error';
             default:                        return 'Unknown';
         }
     }

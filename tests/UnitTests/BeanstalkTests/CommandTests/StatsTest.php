@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 namespace UnitTests\BeanstalkTests\CommandTests\StatsTest;
@@ -48,12 +47,6 @@ class TestCases extends PHPUnit_Framework_TestCase
 
         $command = new BeanstalkCommandStats();
         $command->parseResponse('This is wack');
-    }
-
-    public function run(\PHPUnit_Framework_TestResult $result = NULL)
-    {
-        $this->setPreserveGlobalState(false);
-        return parent::run($result);
     }
 
 }

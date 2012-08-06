@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 
@@ -46,13 +45,13 @@ class Beanstalk
 
         if (strpos($className, 'BeanstalkCommand') === 0 && ($className !== 'BeanstalkCommand'))
         {
-            require dirname(__FILE__) . '/Beanstalk/Command/' . substr($className, 16) . '.php';
+            require_once dirname(__FILE__) . '/Beanstalk/Command/' . substr($className, 16) . '.php';
             return true;
         }
 
         // split on caps
         preg_match_all('/[A-Z][^A-Z]*/', $className, $matches);
-        require dirname(__FILE__) . '/' . implode('/', $matches[0]) . '.php';
+        require_once dirname(__FILE__) . '/' . implode('/', $matches[0]) . '.php';
     }
 
 }

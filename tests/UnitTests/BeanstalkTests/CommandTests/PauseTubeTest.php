@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 namespace UnitTests\BeanstalkTests\CommandTests\PauseTubeTest;
@@ -64,12 +63,6 @@ class TestCases extends PHPUnit_Framework_TestCase
 
         $command = new BeanstalkCommandPauseTube('tube-name', 30);
         $command->parseResponse('This is wack');
-    }
-
-    public function run(\PHPUnit_Framework_TestResult $result = NULL)
-    {
-        $this->setPreserveGlobalState(false);
-        return parent::run($result);
     }
 
 }

@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 namespace UnitTests\BeanstalkTests\JobTest;
@@ -127,12 +126,6 @@ class TestCases extends PHPUnit_Framework_TestCase
 
         $job = new BeanstalkJob($this->conn, 8867, '{"content":"Hello World!"}');
         $this->assertTrue($job->bury(65840));
-    }
-
-    public function run(\PHPUnit_Framework_TestResult $result = NULL)
-    {
-        $this->setPreserveGlobalState(false);
-        return parent::run($result);
     }
 
 }

@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 
@@ -31,6 +30,44 @@ class BeanstalkPool
         $this->_addresses[] = sprintf('%s:%s', $host, $port);
     }
 
+    /**
+     * @todo
+     */
+    public function getConnections()
+    {
+        try
+        {
+            $this->connect();
+        }
+        catch (BeanstalkException $e)
+        {
+        }
+
+        return $this->_connections;
+    }
+
+    protected $_lastConnection = false;
+
+    public function getLastConnection()
+    {
+        if ($this->_lastConnection !== false)
+        {
+            return $this->_connections[$this->_lastConnection];
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the Beanstalkd server addresses in the pool
+     *
+     * @return array Beanstalkd server addresses in the format "host:port"
+     */
+    public function getServers()
+    {
+        return $this->_addresses;
+    }
+
     protected $_connections = array();
 
     /**
@@ -60,8 +97,15 @@ class BeanstalkPool
                 // silently fail if a server is offline
                 catch (BeanstalkException $e)
                 {
+                    unset($this->_connections[$address]);
                 }
             }
+        }
+
+        // no connections!
+        if (count($this->_connections) === 0)
+        {
+            throw new BeanstalkException('Could not establish a connection to any beanstalkd server in the pool.');
         }
     }
 
@@ -220,7 +264,7 @@ class BeanstalkPool
             array_shift($args);
         }
 
-        $i = array_rand($this->_connections);
+        $i = $this->_lastConnection = array_rand($this->_connections);
         return call_user_func_array(array($this->_connections[$i], $command), $args);
     }
 

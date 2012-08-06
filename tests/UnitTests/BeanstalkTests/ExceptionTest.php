@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 namespace UnitTests\BeanstalkTests\ExceptionTest;
@@ -105,12 +104,6 @@ class TestCases extends PHPUnit_Framework_TestCase
 
         $e = new BeanstalkException('another error message', BeanstalkException::EXPECTED_CRLF);
         $this->assertEquals('Expected CRLF: another error message', $e->getMessage());
-    }
-
-    public function run(\PHPUnit_Framework_TestResult $result = NULL)
-    {
-        $this->setPreserveGlobalState(false);
-        return parent::run($result);
     }
 
 }

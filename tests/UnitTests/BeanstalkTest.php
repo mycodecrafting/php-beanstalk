@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 namespace UnitTests\BeanstalkTest;
@@ -23,10 +22,21 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->assertSame(Beanstalk::init(), Beanstalk::init());
     }
 
-    public function run(\PHPUnit_Framework_TestResult $result = NULL)
+    public function testAutoloadSkipsUnrelatedClassNames()
     {
-        $this->setPreserveGlobalState(false);
-        return parent::run($result);
+        $this->assertFalse(Beanstalk::autoload('NotBeanstalk'));
+    }
+
+    public function testAutoloadCoreClasses()
+    {
+        Beanstalk::autoload('BeanstalkCommand');
+        $this->assertTrue(class_exists('BeanstalkCommand', false));
+    }
+
+    public function testAutoloadCommandClasses()
+    {
+        Beanstalk::autoload('BeanstalkCommandPut');
+        $this->assertTrue(class_exists('BeanstalkCommandPut', false));
     }
 
 }
