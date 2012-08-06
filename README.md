@@ -5,6 +5,7 @@ A beanstalkd client for PHP 5.3+
 ### As a Producer
 
 ```php
+<?php
 // returns BeanstalkPool instance
 $bean = Beanstalk::init();
 $bean->addServer('localhost', 11300);
@@ -15,6 +16,7 @@ $bean->put('Hello World!');
 ### As a Consumer
 
 ```php
+<?php
 $bean = Beanstalk::init();
 $bean->addServer('localhost', 11300);
 $bean->watch('my-tube');
@@ -52,6 +54,7 @@ while (true)
 #### Objects are automatically converted
 
 ```php
+<?php
 $bean = Beanstalk::init();
 $bean->addServer('localhost', 11300);
 $bean->use('my-tube');
@@ -73,6 +76,7 @@ print_r($job->getMessage());
 #### Send a custom JSON string
 
 ```php
+<?php
 $bean = Beanstalk::init();
 $bean->addServer('localhost', 11300);
 $bean->use('my-tube');
