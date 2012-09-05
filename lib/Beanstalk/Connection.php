@@ -301,6 +301,18 @@ class BeanstalkConnection
     }
 
     /**
+     * The stats-job command gives statistical information about the specified job if it exists.
+     *
+     * @param integer $id The job id to get stats on
+     * @throws BeanstalkException When the job does not exist
+     * @return BeanstalkStats
+     */
+    public function statsJob($id)
+    {
+        return $this->_dispatch(new BeanstalkCommandStatsJob($id));
+    }
+
+    /**
      * The stats-tube command gives statistical information about the specified tube if it exists.
      *
      * @param string $tube is a name at most 200 bytes. Stats will be returned for this tube.
@@ -398,6 +410,13 @@ class BeanstalkConnection
      */
     protected function _dispatch(BeanstalkCommand $command)
     {
+        // re-connect if we have timed out
+        if ($this->isTimedOut() === true)
+        {
+            $this->close();
+            $this->connect();
+        }
+
         $message = $command->getCommand() . "\r\n";
 
         if (($data = $command->getData()) !== false)

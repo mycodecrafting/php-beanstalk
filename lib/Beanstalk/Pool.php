@@ -80,6 +80,7 @@ class BeanstalkPool
         {
             if ($conn->isTimedOut())
             {
+                $conn->close();
                 unset($this->_connections[$address]);
             }
         }
@@ -106,6 +107,17 @@ class BeanstalkPool
         if (count($this->_connections) === 0)
         {
             throw new BeanstalkException('Could not establish a connection to any beanstalkd server in the pool.');
+        }
+    }
+
+    /**
+     * Close all connections in the pool
+     */
+    public function close()
+    {
+        foreach ($this->_connections as $conn)
+        {
+            $conn->close();
         }
     }
 

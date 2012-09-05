@@ -301,6 +301,24 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('BeanstalkStats', $this->conn->stats());
     }
 
+    public function testStatsJobWritesToStream()
+    {
+        $this->stream->expects($this->once())
+                     ->method('write')
+                     ->with($this->equalTo("stats-job 123\r\n"));
+
+        $this->stream->expects($this->once())
+                     ->method('readLine')
+                     ->will($this->returnValue('OK 256'));
+
+        $this->stream->expects($this->once())
+                     ->method('read')
+                     ->with($this->equalTo('256'))
+                     ->will($this->returnValue('stat: value'));
+
+        $this->assertInstanceOf('BeanstalkStats', $this->conn->statsJob('123'));
+    }
+
     public function testStatsTubeWritesToStream()
     {
         $this->stream->expects($this->once())

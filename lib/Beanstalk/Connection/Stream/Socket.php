@@ -36,8 +36,12 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
      */
     public function isTimedOut()
     {
-        $info = stream_get_meta_data($this->_socket);
-        return $this->_socket === false || $info['timed_out'] || feof($this->_socket);
+        if (is_resource($this->_socket))
+        {
+            $info = stream_get_meta_data($this->_socket);
+        }
+
+        return $this->_socket === null || $this->_socket === false || $info['timed_out'] || feof($this->_socket);
     }
 
     /**
@@ -115,7 +119,7 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
      */
     public function close()
     {
-        fclose($this->_socket);
+        @fclose($this->_socket);
         $this->_socket = null;
     }
 

@@ -17,7 +17,11 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->conn = $this->getMock('BeanstalkConnection', array('connect', 'delete', 'touch', 'release', 'bury'), array('localhost:11300', $this->getMock('BeanstalkConnectionStream')));
+        $this->conn = $this->getMock(
+            'BeanstalkConnection',
+            array('connect', 'delete', 'touch', 'release', 'bury', 'statsJob'),
+            array('localhost:11300', $this->getMock('BeanstalkConnectionStream'))
+        );
     }
 
     public function testCanGetJobId()
@@ -126,6 +130,17 @@ class TestCases extends PHPUnit_Framework_TestCase
 
         $job = new BeanstalkJob($this->conn, 8867, '{"content":"Hello World!"}');
         $this->assertTrue($job->bury(65840));
+    }
+
+    public function testCanGetJobStats()
+    {
+        $this->conn->expects($this->once())
+                   ->method('statsJob')
+                   ->with($this->equalTo(1234))
+                   ->will($this->returnValue($this->getMock('BeanstalkStats')));
+
+        $job = new BeanstalkJob($this->conn, 1234, '{"content":"Hello World!"}');
+        $this->assertInstanceOf('BeanstalkStats', $job->stats());
     }
 
 }

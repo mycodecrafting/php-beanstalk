@@ -120,4 +120,18 @@ class BeanstalkJob
         return $this->getConnection()->bury($this->getId(), $priority);
     }
 
+    /**
+     * Get stats on the job
+     *
+     * The stats-job command gives statistical information about the specified job if
+     * it exists.
+     *
+     * @throws BeanstalkException When the job does not exist
+     * @return BeanstalkStats
+     */
+    public function stats()
+    {
+        return $this->getConnection()->statsJob($this->getId());
+    }
+
 }
