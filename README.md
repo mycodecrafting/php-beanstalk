@@ -1,5 +1,7 @@
 A beanstalkd client for PHP 5.3+
 
+[![Build Status](https://travis-ci.org/smarterwebdev/php-beanstalk.png?branch=master)](https://travis-ci.org/smarterwebdev/php-beanstalk)
+
 ## Quickstart
 
 ### As a Producer
