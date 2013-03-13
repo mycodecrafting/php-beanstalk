@@ -30,7 +30,7 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
     }
 
     /**
-     * Has the connection timed out?
+     * Has the connection timed out or otherwise gone away?
      *
      * @return boolean
      */
@@ -55,9 +55,17 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
         for ($written = 0, $fwrite = 0; $written < strlen($data); $written += $fwrite)
         {
             $fwrite = fwrite($this->_socket, substr($data, $written));
-            if ($fwrite === false || ($fwrite === 0 && feof($this->_socket)))
+            if ($fwrite === false ||
+               ($fwrite === 0 && (feof($this->_socket) || socket_last_error($this->_socket) === SOCKET_EPIPE))
+            )
             {
-                return $written;
+                // broken pipe!
+                if (socket_last_error($this->_socket) === SOCKET_EPIPE)
+                {
+                    socket_clear_error();
+                    $this->close();
+                }
+                return false;
             }
         }
 
@@ -76,8 +84,14 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
             $line = rtrim(fgets($this->_socket));
 
             // server must have dropped the connection
-            if ($line === '' && feof($this->_socket))
+            if ($line === '' && (feof($this->_socket) || socket_last_error($this->_socket) === SOCKET_EPIPE))
             {
+                // broken pipe; not sure if this is needed, but just in case. SOCKET_EPIPE should only occur on write()
+                if (socket_last_error($this->_socket) === SOCKET_EPIPE)
+                {
+                    socket_clear_error();
+                    $this->close();
+                }
                 return false;
             }
         }
@@ -93,23 +107,29 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
      */
     public function read($bytes)
     {
-		$read = 0;
-		$parts = array();
+        $read = 0;
+        $parts = array();
 
-		while ($read < $bytes && !feof($this->_socket))
-		{
-			$data = fread($this->_socket, $bytes - $read);
+        while ($read < $bytes && !feof($this->_socket))
+        {
+            $data = fread($this->_socket, $bytes - $read);
 
-			if ($data === false)
-			{
+            if ($data === false)
+            {
+                // broken pipe; not sure if this is needed, but just in case. SOCKET_EPIPE should only occur on write()
+                if (socket_last_error($this->_socket) === SOCKET_EPIPE)
+                {
+                    socket_clear_error();
+                    $this->close();
+                }
                 return false;
-			}
+            }
 
-			$read += strlen($data);
-			$parts []= $data;
-		}
+            $read += strlen($data);
+            $parts []= $data;
+        }
 
-		return implode($parts);
+        return implode($parts);
     }
 
     /**

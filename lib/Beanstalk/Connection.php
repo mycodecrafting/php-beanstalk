@@ -417,6 +417,7 @@ class BeanstalkConnection
             $this->connect();
         }
 
+        // construct message
         $message = $command->getCommand() . "\r\n";
 
         if (($data = $command->getData()) !== false)
@@ -424,10 +425,19 @@ class BeanstalkConnection
             $message .= $data . "\r\n";
         }
 
-        $this->_stream->write($message);
+        // write to stream
+        if ($this->_stream->write($message) === false)
+        {
+            throw new BeanstalkException(
+                'Error writing data to the server.',
+                BeanstalkException::SERVER_WRITE
+            );
+        }
+
+        // read response from stream
         $response = $this->_stream->readLine();
 
-        // common errors
+        // validate against common errors
         $this->validateResponse($response);
 
         $data = null;

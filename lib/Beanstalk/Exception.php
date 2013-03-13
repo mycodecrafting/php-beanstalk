@@ -85,6 +85,11 @@ class BeanstalkException extends Exception
      */
     const SERVER_READ           = 6050;
 
+    /**
+     * @const There was an error writing to the server (broken pipe?)
+     */
+    const SERVER_WRITE          = 6051;
+
     public function __construct($message, $code = 0, Exception $previous = null)
     {
         $this->code = $code;
@@ -116,6 +121,7 @@ class BeanstalkException extends Exception
             case self::UNKNOWN_COMMAND:     return 'Unknown Command';
             case self::SERVER_OFFLINE:      return 'Server Offline';
             case self::SERVER_READ:         return 'Server Read Error';
+            case self::SERVER_WRITE:        return 'Server Write Error';
             default:                        return 'Unknown';
         }
     }

@@ -15,7 +15,7 @@ interface BeanstalkConnectionStream
     public function open($host, $port);
 
     /**
-     * Has the connection timed out?
+     * Has the connection timed out or otherwise gone away?
      *
      * @return boolean
      */
