@@ -1,1 +1,2 @@
 sphinxcontrib-phpdomain
+pygments-style-github
