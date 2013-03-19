@@ -13,6 +13,9 @@
 
 import sys, os
 
+# Determine if we're being built by RTD
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -93,7 +96,6 @@ highlight_language = 'php'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#html_theme = "armstrong"
 html_theme = 'sphinx-bootstrap'
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -104,9 +106,7 @@ html_theme_options = {
 #    'analytics_code': 'UA-00000000-1',
     'github_user': 'smarterwebdev',
     'github_repo': 'php-beanstalk',
-#    'twitter_username': 'scotchmedia',
     'home_url': 'https://github.com/smarterwebdev/php-beanstalk/',
-#    'disqus_shortname': 'scotchmedia',
 }
 
 # Add any paths that contain custom themes here, relative to this directory.

@@ -1,9 +1,4 @@
-/* To change themes. Un-comment the theme you would like to use. */
-
-/*@import "bootstrap-engineauth.min.css";*/
-/*@import "bootstrap-default.min.css";*/
-@import "bootstrap-sapling.css";
-
+@import "codecrafting.css";
 @import "bootstrap-responsive.min.css";
 
 .navbar .brand {
@@ -15,9 +10,7 @@
 }
 
 .footer {
-    /*background-color: #eee;*/
     padding: 30px 0;
-    text-shadow: 0 1px 0 #fff;
     border-top: 1px solid #e5e5e5;
     -webkit-box-shadow: inset 0 5px 15px rgba(0, 0, 0, .025);
     -moz-box-shadow: inset 0 5px 15px rgba(0, 0, 0, .025);
@@ -40,13 +33,8 @@ code, pre {
     color: #000;
 }
 
-span.pre {
-    font-family: monospace;
-    color: #007000;
-}
-
 div.admonition {
-    margin: 1em 0 0 0;
+    margin: 1em 0;
     padding: .2em .5em .2em .9em;
 }
 
@@ -108,15 +96,10 @@ tr > td:nth-child(2) {
 }
 
 .quick-links {
-    border-radius: 3px 3px 3px 3px;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
     list-style: none outside none;
-    /*margin: 43px 0 0;*/
     margin: 0;
-    padding: 5px 20px;
+    padding: 15px 20px;
     text-align: center;
-    -webkit-box-shadow: inset 0 5px 15px rgba(0, 0, 0, .1);
-    -moz-box-shadow: inset 0 5px 15px rgba(0, 0, 0, .1);
 }
 
 .quick-links li {
