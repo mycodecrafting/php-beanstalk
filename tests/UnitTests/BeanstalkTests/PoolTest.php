@@ -148,7 +148,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server3');
 
         $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
-        $this->pool->watch('test_tube');
+        $this->pool->watchTube('test_tube');
 
         $conns = $this->pool->getConnections();
         $count = 0;
@@ -167,7 +167,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server3');
 
         $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
-        $this->pool->ignore('test_tube');
+        $this->pool->ignoreTube('test_tube');
 
         $conns = $this->pool->getConnections();
         $count = 0;
@@ -333,8 +333,8 @@ class TestCases extends PHPUnit_Framework_TestCase
      *           ->setStream('CustomStreamClass')
      *           ->setTimeout(10)
      *           ->useTube('my_tube')
-     *           ->watch('tube_name')
-     *           ->ignore('other_tube');
+     *           ->watchTube('tube_name')
+     *           ->ignoreTube('other_tube');
      */
 
     public function testAddServerReturnsSelf()
@@ -359,18 +359,18 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->assertSame($this->pool, $this->pool->useTube('my_tube'));
     }
 
-    public function testWatchReturnsSelf()
+    public function testWatchTubeReturnsSelf()
     {
         $this->pool->addServer('server1')
                    ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
-        $this->assertSame($this->pool, $this->pool->watch('my_tube'));
+        $this->assertSame($this->pool, $this->pool->watchTube('my_tube'));
     }
 
-    public function testIgnoreReturnsSelf()
+    public function testIgnoreTubeReturnsSelf()
     {
         $this->pool->addServer('server1')
                    ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
-        $this->assertSame($this->pool, $this->pool->ignore('other_tube'));
+        $this->assertSame($this->pool, $this->pool->ignoreTube('other_tube'));
     }
 
 }

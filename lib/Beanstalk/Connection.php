@@ -150,7 +150,7 @@ class BeanstalkConnection
      *
      * @param string $tube Tube to add to the watch list. If the tube doesn't exist, it will be created
      */
-    public function watch($tube)
+    public function watchTube($tube)
     {
         return $this->_dispatch(new BeanstalkCommandWatch($tube));
     }
@@ -163,7 +163,7 @@ class BeanstalkConnection
      *
      * @param string $tube Tube to remove from the watch list
      */
-    public function ignore($tube)
+    public function ignoreTube($tube)
     {
         return $this->_dispatch(new BeanstalkCommandIgnore($tube));
     }

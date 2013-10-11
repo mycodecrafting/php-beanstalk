@@ -103,7 +103,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->method('readLine')
                      ->will($this->returnValue('WATCHING 3'));
 
-        $this->assertEquals(3, $this->conn->watch('test_tube'));
+        $this->assertEquals(3, $this->conn->watchTube('test_tube'));
     }
 
     public function testIgnoreWritesToStream()
@@ -116,7 +116,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->method('readLine')
                      ->will($this->returnValue('WATCHING 1'));
 
-        $this->assertEquals(1, $this->conn->ignore('test_tube'));
+        $this->assertEquals(1, $this->conn->ignoreTube('test_tube'));
     }
 
     public function testReserveWritesToStream()

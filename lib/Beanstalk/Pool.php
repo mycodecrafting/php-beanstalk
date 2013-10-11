@@ -202,9 +202,9 @@ class BeanstalkPool
      * @param string $tube Tube to add to the watch list. If the tube doesn't exist, it will be created
      * @return self
      */
-    public function watch($tube)
+    public function watchTube($tube)
     {
-        $this->_sendToAllConnections('watch', $tube);
+        $this->_sendToAllConnections('watchTube', $tube);
         return $this;
     }
 
@@ -217,9 +217,9 @@ class BeanstalkPool
      * @param string $tube Tube to remove from the watch list
      * @return self
      */
-    public function ignore($tube)
+    public function ignoreTube($tube)
     {
-        $this->_sendToAllConnections('ignore', $tube);
+        $this->_sendToAllConnections('ignoreTube', $tube);
         return $this;
     }
 

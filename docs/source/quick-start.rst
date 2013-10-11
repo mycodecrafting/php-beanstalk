@@ -19,7 +19,7 @@ As a Consumer
 
     $bean = Beanstalk::init();
     $bean->addServer('localhost', 11300)
-         ->watch('my-tube');
+         ->watchTube('my-tube');
 
     while (true)
     {
@@ -64,7 +64,7 @@ Objects are automatically converted
     $obj->content = 'Hello World!';
     $bean->put($obj); // stored in beanstalkd as '{"content":"Hello World!"}'
 
-    $bean->watch('my-tube');
+    $bean->watchTube('my-tube');
     $job = $bean->reserve();
     print_r($job->getMessage());
 
@@ -85,7 +85,7 @@ Send a custom JSON string
          ->useTube('my-tube')
          ->put('[123,456,789]');
 
-    $bean->watch('my-tube');
+    $bean->watchTube('my-tube');
     $job = $bean->reserve();
     print_r($job->getMessage());
 
