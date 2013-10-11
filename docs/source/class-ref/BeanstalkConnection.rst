@@ -17,7 +17,7 @@ BeanstalkConnection Class Ref
     * :php:meth:`BeanstalkConnection::getServer` -- Get the Beanstalkd server address
     * :php:meth:`BeanstalkConnection::getStream` -- Get the connect's stream
     * :php:meth:`BeanstalkConnection::getTimeout` -- Get the connection timeout
-    * :php:meth:`BeanstalkConnection::ignore` -- Ignore command
+    * :php:meth:`BeanstalkConnection::ignoreTube` -- Ignore command
     * :php:meth:`BeanstalkConnection::isTimedOut` -- Has the connection timed out?
     * :php:meth:`BeanstalkConnection::kick` -- Kick command
     * :php:meth:`BeanstalkConnection::listTubes` -- The list-tubes command returns a list of all existing tubes
@@ -36,7 +36,7 @@ BeanstalkConnection Class Ref
     * :php:meth:`BeanstalkConnection::touch` -- Touch command
     * :php:meth:`BeanstalkConnection::useTube` -- Use command
     * :php:meth:`BeanstalkConnection::validateResponse` -- Generic validation for all responses from beanstalkd
-    * :php:meth:`BeanstalkConnection::watch` -- Watch command
+    * :php:meth:`BeanstalkConnection::watchTube` -- Watch command
 
 .. php:method:: __construct( $address , $stream [ , $timeout = 500 ] )
 
@@ -92,7 +92,7 @@ BeanstalkConnection Class Ref
     :Description: Get the connection timeout
     :returns: *float* Connection timeout
 
-.. php:method:: ignore( $tube )
+.. php:method:: ignoreTube( $tube )
 
     :Description: Ignore command
     :param string $tube: Tube to remove from the watch list
@@ -240,7 +240,7 @@ BeanstalkConnection Class Ref
     :returns: *boolean* true when response is valid
     :throws: *BeanstalkException* When response is invalid
 
-.. php:method:: watch( $tube )
+.. php:method:: watchTube( $tube )
 
     :Description: Watch command
     :param string $tube: Tube to add to the watch list. If the tube doesn't exist, it will be created

@@ -16,7 +16,7 @@ BeanstalkPool Class Ref
     * :php:meth:`BeanstalkPool::getLastConnection`
     * :php:meth:`BeanstalkPool::getServers` -- Get the Beanstalkd server addresses in the pool
     * :php:meth:`BeanstalkPool::getTimeout` -- Get the current connection timeout
-    * :php:meth:`BeanstalkPool::ignore` -- Ignore command
+    * :php:meth:`BeanstalkPool::ignoreTube` -- Ignore command
     * :php:meth:`BeanstalkPool::kick` -- Kick command
     * :php:meth:`BeanstalkPool::listTubes` -- The list-tubes command returns a list of all existing tubes
     * :php:meth:`BeanstalkPool::pauseTube` -- The pause-tube command can delay any new job being reserved for a given time
@@ -26,7 +26,7 @@ BeanstalkPool Class Ref
     * :php:meth:`BeanstalkPool::setTimeout` -- Set the connection timeout for attempting to connect to servers in the pool
     * :php:meth:`BeanstalkPool::stats` -- The stats command gives statistical information about the system as a whole
     * :php:meth:`BeanstalkPool::useTube` -- Use command
-    * :php:meth:`BeanstalkPool::watch` -- Watch command
+    * :php:meth:`BeanstalkPool::watchTube` -- Watch command
 
 .. php:method:: addServer( $host [ , $port = 11300 ] )
 
@@ -59,7 +59,7 @@ BeanstalkPool Class Ref
     :Description: Get the current connection timeout
     :returns: *float* Current connection timeout
 
-.. php:method:: ignore( $tube )
+.. php:method:: ignoreTube( $tube )
 
     :Description: Ignore command
     :param string $tube: Tube to remove from the watch list
@@ -141,7 +141,7 @@ BeanstalkPool Class Ref
     the tube specified by this command. If no use command has been issued, jobs
     will be put into the tube named "default".
 
-.. php:method:: watch( $tube )
+.. php:method:: watchTube( $tube )
 
     :Description: Watch command
     :param string $tube: Tube to add to the watch list. If the tube doesn't exist, it will be created
