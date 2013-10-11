@@ -12,18 +12,21 @@ class BeanstalkConnection
 
     protected $_address;
     protected $_stream;
+    protected $_timeout;
 
     /**
      * Constructor; establishes connection stream
      *
      * @param string $address Beanstalkd server address in the format "host:port"
      * @param BeanstalkConnectionStream $stream Stream to use for connection
+     * @param float $timeout Connection timeout in milliseconds
      * @throws BeanstalkException When a connection cannot be established
      */
-    public function __construct($address, BeanstalkConnectionStream $stream)
+    public function __construct($address, BeanstalkConnectionStream $stream, $timeout = 500)
     {
         $this->_address = $address;
         $this->_stream = $stream;
+        $this->setTimeout($timeout);
         $this->connect();
     }
 
@@ -35,10 +38,10 @@ class BeanstalkConnection
      */
     public function connect()
     {
-        list($host, $port) = explode(':', $this->_address);
-        if ($this->_stream->open($host, $port) === false)
+        list($host, $port) = explode(':', $this->getServer());
+        if ($this->_stream->open($host, $port, $this->getTimeout()) === false)
         {
-            throw new BeanstalkException(sprintf('Cannot connect to server %s', $this->_address), BeanstalkException::SERVER_OFFLINE);
+            throw new BeanstalkException(sprintf('Cannot connect to server %s', $this->getServer()), BeanstalkException::SERVER_OFFLINE);
         }
 
         return true;
@@ -62,6 +65,26 @@ class BeanstalkConnection
     public function getServer()
     {
         return $this->_address;
+    }
+
+    /**
+     * Get the connection timeout
+     *
+     * @return float Connection timeout
+     */
+    public function getTimeout()
+    {
+        return $this->_timeout;
+    }
+
+    /**
+     * Set the connection timeout
+     *
+     * @param float $timeout Connection timeout in milliseconds
+     */
+    public function setTimeout($timeout)
+    {
+        $this->_timeout = (float)$timeout;
     }
 
     /**

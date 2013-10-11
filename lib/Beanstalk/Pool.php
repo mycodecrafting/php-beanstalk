@@ -12,9 +12,16 @@ class BeanstalkPool
 
     protected $_streamClass = 'BeanstalkConnectionStreamSocket';
 
+    /**
+     * Sets the stream class to use for the connections in the pool
+     *
+     * @param string $class Name of stream class
+     * @return self
+     */
     public function setStream($class)
     {
         $this->_streamClass = $class;
+        return $this;
     }
 
     protected $_addresses = array();
@@ -24,10 +31,36 @@ class BeanstalkPool
      *
      * @param string $host Server host
      * @param integer $port Server port
+     * @return self
      */
     public function addServer($host, $port = 11300)
     {
         $this->_addresses[] = sprintf('%s:%s', $host, $port);
+        return $this;
+    }
+
+    protected $_timeout = 500;
+
+    /**
+     * Get the current connection timeout
+     *
+     * @return float Current connection timeout
+     */
+    public function getTimeout()
+    {
+        return $this->_timeout;
+    }
+
+    /**
+     * Set the connection timeout for attempting to connect to servers in the pool
+     *
+     * @param float $timeout Connection timeout in milliseconds
+     * @return self
+     */
+    public function setTimeout($timeout)
+    {
+        $this->_timeout = (float)$timeout;
+        return $this;
     }
 
     /**
@@ -92,7 +125,7 @@ class BeanstalkPool
             {
                 try
                 {
-                    $this->_connections[$address] = new BeanstalkConnection($address, new $this->_streamClass);
+                    $this->_connections[$address] = new BeanstalkConnection($address, new $this->_streamClass, $this->getTimeout());
                 }
 
                 // silently fail if a server is offline
@@ -150,10 +183,12 @@ class BeanstalkPool
      * will be put into the tube named "default".
      *
      * @param string $tube The tube to use. If the tube does not exist, it will be created.
+     * @return self
      */
     public function useTube($tube)
     {
         $this->_sendToAllConnections('useTube', $tube);
+        return $this;
     }
 
     /**
@@ -165,10 +200,12 @@ class BeanstalkPool
      * tube, named "default".
      *
      * @param string $tube Tube to add to the watch list. If the tube doesn't exist, it will be created
+     * @return self
      */
     public function watch($tube)
     {
         $this->_sendToAllConnections('watch', $tube);
+        return $this;
     }
 
     /**
@@ -178,10 +215,12 @@ class BeanstalkPool
      * watch list for the current connection.
      *
      * @param string $tube Tube to remove from the watch list
+     * @return self
      */
     public function ignore($tube)
     {
         $this->_sendToAllConnections('ignore', $tube);
+        return $this;
     }
 
     /**

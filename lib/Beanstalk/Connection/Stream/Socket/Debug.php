@@ -5,9 +5,9 @@
 class BeanstalkConnectionStreamSocketDebug extends BeanstalkConnectionStreamSocket
 {
 
-    public function open($host, $port)
+    public function open($host, $port, $timeout)
     {
-        $this->_out('OPEN', sprintf('host=%s, port=%s', $host, $port));
+        $this->_out('OPEN', sprintf('host=%s, port=%s, timeout=%sms', $host, $port, $timeout));
         return parent::open($host, $port);
     }
 

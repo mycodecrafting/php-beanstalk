@@ -5,10 +5,12 @@
 /**
  * Implements the Beanstalk Protocol
  *
+ * <code>
  * $bean = Beanstalk::init(); // returns BeanstalkPool instance
  * $bean->addServer('localhost', 11300);
- * $bean->use('my-tube');
+ * $bean->useTube('my-tube');
  * $bean->put('Hello World!');
+ * </code>
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  * @see https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt

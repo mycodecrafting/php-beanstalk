@@ -10,9 +10,10 @@ interface BeanstalkConnectionStream
      *
      * @param string $host Host or IP address to connect to
      * @param integer $port Port to connect on
+     * @param float $timeout Connection timeout in milliseconds
      * @return boolean
      */
-    public function open($host, $port);
+    public function open($host, $port, $timeout);
 
     /**
      * Has the connection timed out or otherwise gone away?

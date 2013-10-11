@@ -294,12 +294,91 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->assertEquals(15, $this->pool->kick(5));
     }
 
+    public function testTimeoutDefaultsTo500ms()
+    {
+        $this->assertEquals(500, $this->pool->getTimeout());
+    }
+
+    public function testCanAlterDefaultTimeout()
+    {
+        $this->pool->setTimeout(10);
+        $this->assertEquals(10, $this->pool->getTimeout());
+    }
+
+    public function testSetTimeoutIsAFloat()
+    {
+        $this->pool->setTimeout('100');
+        $this->assertInternalType('float', $this->pool->getTimeout());
+    }
+
+    public function testSetsTimeoutInConnection()
+    {
+        $this->pool->addServer('server1')
+                   ->addServer('server2')
+                   ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamOnline')
+                   ->setTimeout(10);
+
+        foreach ($this->pool->getConnections() as $conn)
+        {
+            $this->assertEquals(10, $conn->getTimeout());
+        }
+    }
+
+    /**
+     * Tests for fluid interface:
+     *      $pool->addServer('server1')
+     *           ->addServer('server2')
+     *           ->addServer('server3')
+     *           ->addServer('server4')
+     *           ->setStream('CustomStreamClass')
+     *           ->setTimeout(10)
+     *           ->useTube('my_tube')
+     *           ->watch('tube_name')
+     *           ->ignore('other_tube');
+     */
+
+    public function testAddServerReturnsSelf()
+    {
+        $this->assertSame($this->pool, $this->pool->addServer('server1'));
+    }
+
+    public function testSetStreamReturnsSelf()
+    {
+        $this->assertSame($this->pool, $this->pool->setStream('CustomStreamClass'));
+    }
+
+    public function testSetTimeoutReturnsSelf()
+    {
+        $this->assertSame($this->pool, $this->pool->setTimeout(10));
+    }
+
+    public function testUseTubeReturnsSelf()
+    {
+        $this->pool->addServer('server1')
+                   ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamUseWriteCount');
+        $this->assertSame($this->pool, $this->pool->useTube('my_tube'));
+    }
+
+    public function testWatchReturnsSelf()
+    {
+        $this->pool->addServer('server1')
+                   ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
+        $this->assertSame($this->pool, $this->pool->watch('my_tube'));
+    }
+
+    public function testIgnoreReturnsSelf()
+    {
+        $this->pool->addServer('server1')
+                   ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
+        $this->assertSame($this->pool, $this->pool->ignore('other_tube'));
+    }
+
 }
 
 class TestBeanstalkConnectionStreamOffline implements \BeanstalkConnectionStream
 {
 
-    public function open($host, $port)
+    public function open($host, $port, $timeout)
     {
         return false;
     }
@@ -333,7 +412,7 @@ class TestBeanstalkConnectionStreamOffline implements \BeanstalkConnectionStream
 class TestBeanstalkConnectionStreamOnline implements \BeanstalkConnectionStream
 {
 
-    public function open($host, $port)
+    public function open($host, $port, $timeout)
     {
         return true;
     }

@@ -35,6 +35,15 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->assertEquals('server:port', $this->conn->getServer());
     }
 
+    public function testConnectOpensStream()
+    {
+        $this->stream->expects($this->once())
+                     ->method('open')
+                     ->with($this->equalTo('server'), $this->equalTo('port'), $this->equalTo(500))
+                     ->will($this->returnValue(true));
+        $this->assertTrue($this->conn->connect());
+    }
+
     public function testTimedOutStreamTimedOut()
     {
         $this->stream->expects($this->once())
@@ -401,6 +410,39 @@ class TestCases extends PHPUnit_Framework_TestCase
     public function testValidateResponseNoError()
     {
         $this->assertTrue($this->conn->validateResponse("OK 256\r\n"));
+    }
+
+    public function testTimeoutDefaultsTo500ms()
+    {
+        $this->assertEquals(500, $this->conn->getTimeout());
+    }
+
+    public function testCanAlterDefaultTimeout()
+    {
+        $conn = new BeanstalkConnection('server:port', $this->stream, 10);
+        $this->assertEquals(10, $conn->getTimeout());
+    }
+
+    public function testSetTimeoutIsAFloat()
+    {
+        $conn = new BeanstalkConnection('server:port', $this->stream, '150');
+        $this->assertInternalType('float', $conn->getTimeout());
+    }
+
+    public function testCanResetTimeout()
+    {
+        $this->conn->setTimeout(2500);
+        $this->assertEquals(2500, $this->conn->getTimeout());
+    }
+
+    public function testSendsTimeoutToStream()
+    {
+        $this->stream->expects($this->once())
+                     ->method('open')
+                     ->with($this->equalTo('server'), $this->equalTo('port'), $this->equalTo(200))
+                     ->will($this->returnValue(true));
+        $this->conn->setTimeout(200);
+        $this->assertTrue($this->conn->connect());
     }
 
 }
