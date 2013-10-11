@@ -11,7 +11,7 @@ Beanstalk Class Ref
 
         $bean = Beanstalk::init(); // returns BeanstalkPool instance
         $bean->addServer('localhost', 11300);
-        $bean->use('my-tube');
+        $bean->useTube('my-tube');
         $bean->put('Hello World!');
 
 .. topic:: Class Methods
