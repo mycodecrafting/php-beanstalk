@@ -3,7 +3,9 @@ BeanstalkConnection Class Ref
 
 .. php:class:: BeanstalkConnection
 
-    Beanstalkd connection
+    :Description: Beanstalkd connection
+    :Author: Joshua Dechant <jdechant@shapeup.com>
+
 
 .. topic:: Class Methods
 
@@ -14,6 +16,7 @@ BeanstalkConnection Class Ref
     * :php:meth:`BeanstalkConnection::delete` -- Delete command
     * :php:meth:`BeanstalkConnection::getServer` -- Get the Beanstalkd server address
     * :php:meth:`BeanstalkConnection::getStream` -- Get the connect's stream
+    * :php:meth:`BeanstalkConnection::getTimeout` -- Get the connection timeout
     * :php:meth:`BeanstalkConnection::ignore` -- Ignore command
     * :php:meth:`BeanstalkConnection::isTimedOut` -- Has the connection timed out?
     * :php:meth:`BeanstalkConnection::kick` -- Kick command
@@ -26,6 +29,7 @@ BeanstalkConnection Class Ref
     * :php:meth:`BeanstalkConnection::put` -- The "put" command is for any process that wants to insert a job into the queue
     * :php:meth:`BeanstalkConnection::release` -- Release command
     * :php:meth:`BeanstalkConnection::reserve` -- Reserve command
+    * :php:meth:`BeanstalkConnection::setTimeout` -- Set the connection timeout
     * :php:meth:`BeanstalkConnection::stats` -- The stats command gives statistical information about the system as a whole.
     * :php:meth:`BeanstalkConnection::statsJob` -- The stats-job command gives statistical information about the specified job if it exists.
     * :php:meth:`BeanstalkConnection::statsTube` -- The stats-tube command gives statistical information about the specified tube if it exists.
@@ -34,20 +38,19 @@ BeanstalkConnection Class Ref
     * :php:meth:`BeanstalkConnection::validateResponse` -- Generic validation for all responses from beanstalkd
     * :php:meth:`BeanstalkConnection::watch` -- Watch command
 
-.. php:method:: __construct( $address , $stream )
+.. php:method:: __construct( $address , $stream [ , $timeout = 500 ] )
 
-    Constructor; establishes connection stream
-
+    :Description: Constructor; establishes connection stream
     :param string $address: Beanstalkd server address in the format "host:port"
     :param BeanstalkConnectionStream $stream: Stream to use for connection
-    :throws: :php:class:`BeanstalkException` When a connection cannot be established
+    :param float $timeout: Connection timeout in milliseconds
+    :throws: *BeanstalkException* When a connection cannot be established
 
 .. php:method:: bury( $id , $priority )
 
-    Bury command
-
+    :Description: Bury command
     :param integer $id: The job id to bury
-    :param integer $priority: A new priority to assign to the job     
+    :param integer $priority: A new priority to assign to the job
 
     The bury command puts a job into the "buried" state. Buried jobs are put into a
     FIFO linked list and will not be touched by the server again until a client
@@ -55,19 +58,17 @@ BeanstalkConnection Class Ref
 
 .. php:method:: close(  )
 
-    Close the connection
+    :Description: Close the connection
 
 .. php:method:: connect(  )
 
-    Connect to the beanstalkd server
-
+    :Description: Connect to the beanstalkd server
     :returns: *boolean*
-    :throws: *BeanstalkException*  When a connection cannot be established
+    :throws: *BeanstalkException* When a connection cannot be established
 
 .. php:method:: delete( $id )
 
-    Delete command
-
+    :Description: Delete command
     :param integer $id: The job id to delete
     :returns: *boolean*
     :throws: *BeanstalkException*
@@ -78,20 +79,22 @@ BeanstalkConnection Class Ref
 
 .. php:method:: getServer(  )
 
-    Get the Beanstalkd server address
-
-    :returns: *string*  Beanstalkd server address in the format "host:port"
+    :Description: Get the Beanstalkd server address
+    :returns: *string* Beanstalkd server address in the format "host:port"
 
 .. php:method:: getStream(  )
 
-    Get the connect's stream
-
+    :Description: Get the connect's stream
     :returns: *BeanstalkConnectionStream*
+
+.. php:method:: getTimeout(  )
+
+    :Description: Get the connection timeout
+    :returns: *float* Connection timeout
 
 .. php:method:: ignore( $tube )
 
-    Ignore command
-
+    :Description: Ignore command
     :param string $tube: Tube to remove from the watch list
 
     The "ignore" command is for consumers. It removes the named tube from the
@@ -99,16 +102,14 @@ BeanstalkConnection Class Ref
 
 .. php:method:: isTimedOut(  )
 
-    Has the connection timed out?
-
+    :Description: Has the connection timed out?
     :returns: *boolean*
 
 .. php:method:: kick( $bound )
 
-    Kick command
-
+    :Description: Kick command
     :param integer $bound: Upper bound on the number of jobs to kick. The server will kick no more than $bound jobs.
-    :returns: *integer*  The number of jobs actually kicked
+    :returns: *integer* The number of jobs actually kicked
 
     The kick command applies only to the currently used tube. It moves jobs into
     the ready queue. If there are any buried jobs, it will only kick buried jobs.
@@ -116,12 +117,11 @@ BeanstalkConnection Class Ref
 
 .. php:method:: listTubes(  )
 
-    The list-tubes command returns a list of all existing tubes
+    :Description: The list-tubes command returns a list of all existing tubes
 
 .. php:method:: pauseTube( $tube , $delay )
 
-    The pause-tube command can delay any new job being reserved for a given time
-
+    :Description: The pause-tube command can delay any new job being reserved for a given time
     :param string $tube: The tube to pause
     :param integer $delay: Number of seconds to wait before reserving any more jobs from the queue
     :returns: *boolean*
@@ -129,37 +129,32 @@ BeanstalkConnection Class Ref
 
 .. php:method:: peek( $id )
 
-    Return job $id
-
+    :Description: Return job $id
     :param integer $id: Id of job to return
     :returns: *BeanstalkJob*
-    :throws: *BeanstalkException*  When job cannot be found
+    :throws: *BeanstalkException* When job cannot be found
 
 .. php:method:: peekBuried(  )
 
-    Return the next job in the list of buried jobs
-
+    :Description: Return the next job in the list of buried jobs
     :returns: *BeanstalkJob*
-    :throws: *BeanstalkException*  When no jobs in buried state
+    :throws: *BeanstalkException* When no jobs in buried state
 
 .. php:method:: peekDelayed(  )
 
-    Return the delayed job with the shortest delay left
-
+    :Description: Return the delayed job with the shortest delay left
     :returns: *BeanstalkJob*
-    :throws: *BeanstalkException*  When no jobs in delayed state
+    :throws: *BeanstalkException* When no jobs in delayed state
 
 .. php:method:: peekReady(  )
 
-    Return the next ready job
-
+    :Description: Return the next ready job
     :returns: *BeanstalkJob*
-    :throws: *BeanstalkException*  When no jobs in ready state
+    :throws: *BeanstalkException* When no jobs in ready state
 
 .. php:method:: put( $message [ , $priority = 65536 , $delay = 0 , $ttr = 120 ] )
 
-    The "put" command is for any process that wants to insert a job into the queue
-
+    :Description: The "put" command is for any process that wants to insert a job into the queue
     :param mixed $message: Description
     :param integer $priority: Job priority.
     :param integer $delay: Number of seconds to wait before putting the job in the ready queue.
@@ -167,8 +162,7 @@ BeanstalkConnection Class Ref
 
 .. php:method:: release( $id , $priority , $delay )
 
-    Release command
-
+    :Description: Release command
     :param integer $id: The job id to release
     :param integer $priority: A new priority to assign to the job
     :param integer $delay: Number of seconds to wait before putting the job in the ready queue. The job will be in the "delayed" state during this time
@@ -179,8 +173,7 @@ BeanstalkConnection Class Ref
 
 .. php:method:: reserve( [ $timeout = null ] )
 
-    Reserve command
-
+    :Description: Reserve command
     :param integer $timeout: Wait timeout in seconds
 
     This will return a newly-reserved job. If no job is available to be reserved,
@@ -195,30 +188,32 @@ BeanstalkConnection Class Ref
     time the client will block on the reserve request until a job becomes
     available.
 
+.. php:method:: setTimeout( $timeout )
+
+    :Description: Set the connection timeout
+    :param float $timeout: Connection timeout in milliseconds
+
 .. php:method:: stats(  )
 
-    The stats command gives statistical information about the system as a whole.
+    :Description: The stats command gives statistical information about the system as a whole.
 
 .. php:method:: statsJob( $id )
 
-    The stats-job command gives statistical information about the specified job if it exists.
-
+    :Description: The stats-job command gives statistical information about the specified job if it exists.
     :param integer $id: The job id to get stats on
     :returns: *BeanstalkStats*
-    :throws: *BeanstalkException*  When the job does not exist
+    :throws: *BeanstalkException* When the job does not exist
 
 .. php:method:: statsTube( $tube )
 
-    The stats-tube command gives statistical information about the specified tube if it exists.
-
+    :Description: The stats-tube command gives statistical information about the specified tube if it exists.
     :param string $tube: is a name at most 200 bytes. Stats will be returned for this tube.
     :returns: *BeanstalkStats*
-    :throws: *BeanstalkException*  When the tube does not exist
+    :throws: *BeanstalkException* When the tube does not exist
 
 .. php:method:: touch( $id )
 
-    Touch command
-
+    :Description: Touch command
     :param integer $id: The job id to touch
     :returns: *boolean*
     :throws: *BeanstalkException*
@@ -231,8 +226,7 @@ BeanstalkConnection Class Ref
 
 .. php:method:: useTube( $tube )
 
-    Use command
-
+    :Description: Use command
     :param string $tube: The tube to use. If the tube does not exist, it will be created.
 
     The "use" command is for producers. Subsequent put commands will put jobs into
@@ -241,19 +235,19 @@ BeanstalkConnection Class Ref
 
 .. php:method:: validateResponse( $response )
 
-    Generic validation for all responses from beanstalkd
-
+    :Description: Generic validation for all responses from beanstalkd
     :param string $response: 
-    :returns: *boolean*  true when response is valid
-    :throws: *BeanstalkException*  When response is invalid
+    :returns: *boolean* true when response is valid
+    :throws: *BeanstalkException* When response is invalid
 
 .. php:method:: watch( $tube )
 
-    Watch command
-
+    :Description: Watch command
     :param string $tube: Tube to add to the watch list. If the tube doesn't exist, it will be created
 
     The "watch" command adds the named tube to the watch list for the current
     connection. A reserve command will take a job from any of the tubes in the
     watch list. For each new connection, the watch list initially consists of one
     tube, named "default".
+
+

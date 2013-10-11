@@ -13,6 +13,10 @@
 
 import sys, os
 
+# Highlight PHP code without <?php
+import sphinx.highlighting, pygments.lexers
+sphinx.highlighting.lexers['php'] = pygments.lexers.PhpLexer(startinline = True)
+
 # Determine if we're being built by RTD
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 

@@ -3,11 +3,12 @@ Beanstalk Class Ref
 
 .. php:class:: Beanstalk
 
-    Implements the Beanstalk Protocol
+    :Description: Implements the Beanstalk Protocol
+    :Author: Joshua Dechant <jdechant@shapeup.com>
+
 
     .. sourcecode:: php
 
-        <?php
         $bean = Beanstalk::init(); // returns BeanstalkPool instance
         $bean->addServer('localhost', 11300);
         $bean->use('my-tube');
@@ -20,12 +21,12 @@ Beanstalk Class Ref
 
 .. php:staticmethod:: autoload( $className )
 
-    Autoload beanstalk classes
-
+    :Description: Autoload beanstalk classes
     :param mixed $className:
 
-.. php:staticmethod:: init( )
+.. php:staticmethod:: init(  )
 
-    Init the beanstalkd pool
+    :Description: Init the beanstalkd pool
+    :returns: *BeanstalkPool*
 
-    :returns: :php:class:`BeanstalkPool`
+

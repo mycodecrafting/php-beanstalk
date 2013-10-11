@@ -6,22 +6,20 @@ As a Producer
 
 .. sourcecode:: php
 
-    <?php
     // returns BeanstalkPool instance
     $bean = Beanstalk::init();
-    $bean->addServer('localhost', 11300);
-    $bean->use('my-tube');
-    $bean->put('Hello World!');
+    $bean->addServer('localhost', 11300)
+         ->useTube('my-tube')
+         ->put('Hello World!');
 
 As a Consumer
 *************
 
 .. sourcecode:: php
 
-    <?php
     $bean = Beanstalk::init();
-    $bean->addServer('localhost', 11300);
-    $bean->watch('my-tube');
+    $bean->addServer('localhost', 11300)
+         ->watch('my-tube');
 
     while (true)
     {
@@ -58,10 +56,9 @@ Objects are automatically converted
 
 .. sourcecode:: php
 
-    <?php
     $bean = Beanstalk::init();
-    $bean->addServer('localhost', 11300);
-    $bean->use('my-tube');
+    $bean->addServer('localhost', 11300)
+         ->useTube('my-tube');
 
     $obj = new stdClass;
     $obj->content = 'Hello World!';
@@ -83,11 +80,10 @@ Send a custom JSON string
 
 .. sourcecode:: php
 
-    <?php
     $bean = Beanstalk::init();
-    $bean->addServer('localhost', 11300);
-    $bean->use('my-tube');
-    $bean->put('[123,456,789]');
+    $bean->addServer('localhost', 11300)
+         ->useTube('my-tube')
+         ->put('[123,456,789]');
 
     $bean->watch('my-tube');
     $job = $bean->reserve();

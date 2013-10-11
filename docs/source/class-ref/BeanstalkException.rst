@@ -3,22 +3,34 @@ BeanstalkException Class Ref
 
 .. php:class:: BeanstalkException
 
-    Beanstalk Exceptions
+    :Extends: :php:class:`Exception`
+    :Description: Beanstalk Exceptions
+    :Author: Joshua Dechant <jdechant@shapeup.com>
 
-    :extends: :php:class:`Exception`
+
+.. topic:: Class Constants
+
+  .. php:const:: OUT_OF_MEMORY
+  .. php:const:: INTERNAL_ERROR
+  .. php:const:: BAD_FORMAT
+  .. php:const:: UNKNOWN_COMMAND
+  .. php:const:: BURIED
+  .. php:const:: NOT_FOUND
+  .. php:const:: EXPECTED_CRLF
+  .. php:const:: JOB_TOO_BIG
+  .. php:const:: DEADLINE_SOON
+  .. php:const:: TIMED_OUT
+  .. php:const:: TUBE_NAME_TOO_LONG
+  .. php:const:: NOT_IGNORED
+  .. php:const:: UNKNOWN
+  .. php:const:: SERVER_OFFLINE
+  .. php:const:: SERVER_READ
+  .. php:const:: SERVER_WRITE
 
 .. topic:: Class Methods
 
     * :php:meth:`BeanstalkException::__construct`
-    * :php:meth:`BeanstalkException::__toString`
-    * :php:meth:`BeanstalkException::getCode`
     * :php:meth:`BeanstalkException::getCodeAsString` -- Get a string representation of a given code
-    * :php:meth:`BeanstalkException::getFile`
-    * :php:meth:`BeanstalkException::getLine`
-    * :php:meth:`BeanstalkException::getMessage`
-    * :php:meth:`BeanstalkException::getPrevious`
-    * :php:meth:`BeanstalkException::getTrace`
-    * :php:meth:`BeanstalkException::getTraceAsString`
 
 .. php:method:: __construct( $message [ , $code = 0 , $previous = null ] )
 
@@ -26,24 +38,9 @@ BeanstalkException Class Ref
     :param mixed $code:
     :param Exception $previous:
 
-.. php:method:: __toString(  )
-
-.. php:method:: getCode(  )
-
 .. php:method:: getCodeAsString(  )
 
-    Get a string representation of a given code
-
+    :Description: Get a string representation of a given code
     :returns: *string*
 
-.. php:method:: getFile(  )
 
-.. php:method:: getLine(  )
-
-.. php:method:: getMessage(  )
-
-.. php:method:: getPrevious(  )
-
-.. php:method:: getTrace(  )
-
-.. php:method:: getTraceAsString(  )
