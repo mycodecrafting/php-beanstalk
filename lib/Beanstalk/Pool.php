@@ -126,6 +126,22 @@ class BeanstalkPool
                 try
                 {
                     $this->_connections[$address] = new BeanstalkConnection($address, new $this->_streamClass, $this->getTimeout());
+
+                    // issue certain commands on (re)connection
+                    foreach ($this->_watching as $tube)
+                    {
+                        $this->_connections[$address]->watchTube($tube);
+                    }
+
+                    if ($this->_using !== false)
+                    {
+                        $this->_connections[$address]->useTube($this->_using);
+                    }
+
+                    foreach ($this->_ignoring as $tube)
+                    {
+                        $this->_connections[$address]->ignoreTube($tube);
+                    }
                 }
 
                 // silently fail if a server is offline
@@ -152,6 +168,10 @@ class BeanstalkPool
         {
             $conn->close();
         }
+
+        $this->_using = false;
+        $this->_watching = array();
+        $this->_ignoring = array();
     }
 
     /**
@@ -175,6 +195,8 @@ class BeanstalkPool
         return $this->_sendToRandomConnection('put', $message, $priority, $delay, $ttr);
     }
 
+    protected $_using = false;
+
     /**
      * Use command
      *
@@ -188,8 +210,11 @@ class BeanstalkPool
     public function useTube($tube)
     {
         $this->_sendToAllConnections('useTube', $tube);
+        $this->_using = $tube;
         return $this;
     }
+
+    protected $_watching = array();
 
     /**
      * Watch command
@@ -205,8 +230,14 @@ class BeanstalkPool
     public function watchTube($tube)
     {
         $this->_sendToAllConnections('watchTube', $tube);
+        if (!in_array($tube, $this->_watching))
+        {
+            $this->_watching[] = $tube;
+        }
         return $this;
     }
+
+    protected $_ignoring = array();
 
     /**
      * Ignore command
@@ -220,6 +251,10 @@ class BeanstalkPool
     public function ignoreTube($tube)
     {
         $this->_sendToAllConnections('ignoreTube', $tube);
+        if (!in_array($tube, $this->_ignoring))
+        {
+            $this->_ignoring[] = $tube;
+        }
         return $this;
     }
 
