@@ -56,14 +56,11 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
         for ($written = 0, $fwrite = 0; $written < strlen($data); $written += $fwrite)
         {
             $fwrite = fwrite($this->_socket, substr($data, $written));
-            if ($fwrite === false ||
-               ($fwrite === 0 && (feof($this->_socket) || socket_last_error($this->_socket) === SOCKET_EPIPE))
-            )
+            if ($fwrite === false || ($fwrite === 0 && feof($this->_socket)))
             {
                 // broken pipe!
-                if (socket_last_error($this->_socket) === SOCKET_EPIPE)
+                if ($fwrite === 0 && feof($this->_socket))
                 {
-                    socket_clear_error();
                     $this->close();
                 }
                 return false;
@@ -85,14 +82,9 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
             $line = rtrim(fgets($this->_socket));
 
             // server must have dropped the connection
-            if ($line === '' && (feof($this->_socket) || socket_last_error($this->_socket) === SOCKET_EPIPE))
+            if ($line === '' && feof($this->_socket))
             {
-                // broken pipe; not sure if this is needed, but just in case. SOCKET_EPIPE should only occur on write()
-                if (socket_last_error($this->_socket) === SOCKET_EPIPE)
-                {
-                    socket_clear_error();
-                    $this->close();
-                }
+                $this->close();
                 return false;
             }
         }
@@ -111,23 +103,22 @@ class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
         $read = 0;
         $parts = array();
 
-        while ($read < $bytes && !feof($this->_socket))
+        while ($read < $bytes)
         {
             $data = fread($this->_socket, $bytes - $read);
 
             if ($data === false)
             {
-                // broken pipe; not sure if this is needed, but just in case. SOCKET_EPIPE should only occur on write()
-                if (socket_last_error($this->_socket) === SOCKET_EPIPE)
+                // server must have dropped the connection
+                if (feof($this->_socket))
                 {
-                    socket_clear_error();
                     $this->close();
                 }
                 return false;
             }
 
             $read += strlen($data);
-            $parts []= $data;
+            $parts[] = $data;
         }
 
         return implode($parts);
