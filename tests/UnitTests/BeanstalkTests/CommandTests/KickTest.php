@@ -4,14 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\KickTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandKick;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/Kick.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
+use \Beanstalk\Commands\KickCommand as BeanstalkCommandKick;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -46,7 +40,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandKick(5);
         $command->parseResponse('This is wack');

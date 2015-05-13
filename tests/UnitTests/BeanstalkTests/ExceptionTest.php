@@ -4,11 +4,8 @@
 namespace UnitTests\BeanstalkTests\ExceptionTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkException;
+use \Beanstalk\Exception as BeanstalkException;
 
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../lib/Beanstalk/Exception.php';
 
 class TestCases extends PHPUnit_Framework_TestCase
 {

@@ -4,14 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\WatchTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandWatch;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/Watch.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
+use \Beanstalk\Commands\WatchCommand as BeanstalkCommandWatch;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -27,7 +21,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testCannotSetTubeNameLongerThan200Bytes()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::TUBE_NAME_TOO_LONG);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::TUBE_NAME_TOO_LONG);
 
         $tube = 'a-long-name-for-a-tube-that-is-completely-ridiculous-and-probably-would-not-happen-in-reality-but-we-have-to-test-for-it-anyways-just-in-case-someone-gets-the-crazy-idea-to-create-a-tube-name-like-this';
         $command = new BeanstalkCommandWatch($tube);
@@ -62,7 +56,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandWatch('tube');
         $command->parseResponse('This is wack');

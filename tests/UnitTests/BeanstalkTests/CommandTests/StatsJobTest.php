@@ -4,15 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\StatsJobTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandStatsJob;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/StatsJob.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Stats.php';
+use \Beanstalk\Commands\StatsJobCommand as BeanstalkCommandStatsJob;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -47,12 +40,12 @@ class TestCases extends PHPUnit_Framework_TestCase
     public function testParseResponseOnSuccessReturnsBeanstalkStats()
     {
         $command = new BeanstalkCommandStatsJob(123);
-        $this->assertInstanceOf('BeanstalkStats', $command->parseResponse('OK 256'));
+        $this->assertInstanceOf('\\Beanstalk\\Stats', $command->parseResponse('OK 256'));
     }
 
     public function testParseResponseOnNotFound()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::NOT_FOUND);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::NOT_FOUND);
 
         $command = new BeanstalkCommandStatsJob(123);
         $command->parseResponse('NOT_FOUND');
@@ -60,7 +53,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherError()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandStatsJob(123);
         $command->parseResponse('This is wack');

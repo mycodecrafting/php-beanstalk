@@ -4,15 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\StatsTubeTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandStatsTube;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib//Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib//Beanstalk/Command/StatsTube.php';
-require_once dirname(__FILE__) . '/../../../../lib//Beanstalk/Exception.php';
-require_once dirname(__FILE__) . '/../../../../lib//Beanstalk/Stats.php';
+use \Beanstalk\Commands\StatsTubeCommand as BeanstalkCommandStatsTube;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -25,7 +18,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testCannotSetTubeNameLongerThan200Bytes()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::TUBE_NAME_TOO_LONG);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::TUBE_NAME_TOO_LONG);
 
         $tube = 'a-long-name-for-a-tube-that-is-completely-ridiculous-and-probably-would-not-happen-in-reality-but-we-have-to-test-for-it-anyways-just-in-case-someone-gets-the-crazy-idea-to-create-a-tube-name-like-this';
         $command = new BeanstalkCommandStatsTube($tube);
@@ -46,12 +39,12 @@ class TestCases extends PHPUnit_Framework_TestCase
     public function testParseResponseOnSuccessReturnsBeanstalkStats()
     {
         $command = new BeanstalkCommandStatsTube('tube-name');
-        $this->assertInstanceOf('BeanstalkStats', $command->parseResponse('OK 256'));
+        $this->assertInstanceOf('\\Beanstalk\\Stats', $command->parseResponse('OK 256'));
     }
 
     public function testParseResponseOnNotFound()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::NOT_FOUND);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::NOT_FOUND);
 
         $command = new BeanstalkCommandStatsTube('tube-name');
         $command->parseResponse('NOT_FOUND');
@@ -59,7 +52,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnError()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandStatsTube('tube-name');
         $command->parseResponse('This is wack');

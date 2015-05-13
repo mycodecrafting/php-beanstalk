@@ -4,13 +4,7 @@
 namespace UnitTests\BeanstalkTests\JobTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkJob;
-use \BeanstalkConnection;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../lib/Beanstalk/Job.php';
-require_once dirname(__FILE__) . '/../../../lib/Beanstalk/Connection.php';
+use \Beanstalk\Job;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -18,40 +12,40 @@ class TestCases extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->conn = $this->getMock(
-            'BeanstalkConnection',
+            '\\Beanstalk\\Connection',
             array('connect', 'delete', 'touch', 'release', 'bury', 'statsJob'),
-            array('localhost:11300', $this->getMock('BeanstalkConnectionStream'))
+            array('localhost:11300', $this->getMock('\\Beanstalk\\Connections\\Stream'))
         );
     }
 
     public function testCanGetJobId()
     {
-        $job = new BeanstalkJob($this->conn, 123, '');
+        $job = new Job($this->conn, 123, '');
         $this->assertEquals(123, $job->getId());
 
-        $job = new BeanstalkJob($this->conn, 789, '');
+        $job = new Job($this->conn, 789, '');
         $this->assertEquals(789, $job->getId());
     }
 
     public function testCanGetJobMessage()
     {
-        $job = new BeanstalkJob($this->conn, 123, 'Hello World!');
+        $job = new Job($this->conn, 123, 'Hello World!');
         $this->assertEquals('Hello World!', $job->getMessage());
 
-        $job = new BeanstalkJob($this->conn, 123, 'Another message');
+        $job = new Job($this->conn, 123, 'Another message');
         $this->assertEquals('Another message', $job->getMessage());
     }
 
     public function testConvertsJsonMessageToObject()
     {
-        $job = new BeanstalkJob($this->conn, 123, '{"content":"Hello World!"}');
+        $job = new Job($this->conn, 123, '{"content":"Hello World!"}');
         $this->assertInstanceOf('stdClass', $job->getMessage());
         $this->assertEquals('Hello World!', $job->getMessage()->content);
     }
 
     public function testCanGetConnection()
     {
-        $job = new BeanstalkJob($this->conn, 123, '{"content":"Hello World!"}');
+        $job = new Job($this->conn, 123, '{"content":"Hello World!"}');
         $this->assertSame($this->conn, $job->getConnection());
     }
 
@@ -62,7 +56,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                    ->with($this->equalTo(1122))
                    ->will($this->returnValue(true));
 
-        $job = new BeanstalkJob($this->conn, 1122, '{"content":"Hello World!"}');
+        $job = new Job($this->conn, 1122, '{"content":"Hello World!"}');
         $this->assertTrue($job->delete());
     }
 
@@ -73,7 +67,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                    ->with($this->equalTo(2254))
                    ->will($this->returnValue(true));
 
-        $job = new BeanstalkJob($this->conn, 2254, '{"content":"Hello World!"}');
+        $job = new Job($this->conn, 2254, '{"content":"Hello World!"}');
         $this->assertTrue($job->touch());
     }
 
@@ -84,7 +78,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                    ->with($this->equalTo(3321), $pri = $this->greaterThan(0), $delay = $this->greaterThan(0))
                    ->will($this->returnValue(true));
 
-        $job = new BeanstalkJob($this->conn, 3321, '{"content":"Hello World!"}');
+        $job = new Job($this->conn, 3321, '{"content":"Hello World!"}');
         $this->assertTrue($job->release());
     }
 
@@ -95,7 +89,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                    ->with($this->equalTo(3321), $pri = $this->greaterThan(0), $delay = $this->equalTo(120))
                    ->will($this->returnValue(true));
 
-        $job = new BeanstalkJob($this->conn, 3321, '{"content":"Hello World!"}');
+        $job = new Job($this->conn, 3321, '{"content":"Hello World!"}');
         $this->assertTrue($job->release($delay = 120));
     }
 
@@ -106,7 +100,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                    ->with($this->equalTo(3321), $pri = $this->equalTo(99999), $delay = $this->equalTo(300))
                    ->will($this->returnValue(true));
 
-        $job = new BeanstalkJob($this->conn, 3321, '{"content":"Hello World!"}');
+        $job = new Job($this->conn, 3321, '{"content":"Hello World!"}');
         $this->assertTrue($job->release($delay = 300, $priority = 99999));
     }
 
@@ -117,7 +111,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                    ->with($this->equalTo(8867), $pri = $this->greaterThan(0))
                    ->will($this->returnValue(true));
 
-        $job = new BeanstalkJob($this->conn, 8867, '{"content":"Hello World!"}');
+        $job = new Job($this->conn, 8867, '{"content":"Hello World!"}');
         $this->assertTrue($job->bury());
     }
 
@@ -128,7 +122,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                    ->with($this->equalTo(8867), $pri = $this->equalTo(65840))
                    ->will($this->returnValue(true));
 
-        $job = new BeanstalkJob($this->conn, 8867, '{"content":"Hello World!"}');
+        $job = new Job($this->conn, 8867, '{"content":"Hello World!"}');
         $this->assertTrue($job->bury(65840));
     }
 
@@ -137,10 +131,10 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->conn->expects($this->once())
                    ->method('statsJob')
                    ->with($this->equalTo(1234))
-                   ->will($this->returnValue($this->getMock('BeanstalkStats')));
+                   ->will($this->returnValue($this->getMock('\\Beanstalk\\Stats')));
 
-        $job = new BeanstalkJob($this->conn, 1234, '{"content":"Hello World!"}');
-        $this->assertInstanceOf('BeanstalkStats', $job->stats());
+        $job = new Job($this->conn, 1234, '{"content":"Hello World!"}');
+        $this->assertInstanceOf('\\Beanstalk\\Stats', $job->stats());
     }
 
 }

@@ -4,18 +4,14 @@
 namespace UnitTests\BeanstalkTests\StatsTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkStats;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../lib/Beanstalk/Stats.php';
+use \Beanstalk\Stats;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
 
     public function testCanSetStats()
     {
-        $stats = new BeanstalkStats();
+        $stats = new Stats();
         $stats->setStat('test-stat', '12345');
         $this->assertEquals(12345, $stats->getStat('test-stat'));
 
@@ -25,25 +21,25 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testNonSetStatReturnsFalse()
     {
-        $stats = new BeanstalkStats();
+        $stats = new Stats();
         $this->assertFalse($stats->getStat('not-set'));
     }
 
     public function testGetStatsReturnsArray()
     {
-        $stats = new BeanstalkStats();
+        $stats = new Stats();
         $this->assertInternalType('array', $stats->getStats());
     }
 
     public function testGetStatsEmptyWhenNoStatsSet()
     {
-        $stats = new BeanstalkStats();
+        $stats = new Stats();
         $this->assertEmpty($stats->getStats());
     }
 
     public function testGetStatsNotEmptyWhenStatsSet()
     {
-        $stats = new BeanstalkStats();
+        $stats = new Stats();
         $stats->setStat('test-stat', '12345');
 
         $this->assertNotEmpty($stats->getStats());
@@ -51,7 +47,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testGetStatsReturnsSetStats()
     {
-        $stats = new BeanstalkStats();
+        $stats = new Stats();
         $stats->setStat('test-stat', '12345');
         $stats->setStat('test-stat2', '10098');
 
@@ -68,7 +64,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $data = 'stat-1: value1' . "\r\n" .
                 'another-stat: 123' . "\r\n" .
                 'test-stat: 0.554';
-        $stats = new BeanstalkStats($data);
+        $stats = new Stats($data);
 
         $this->assertNotEmpty($stats->getStats());
         $this->assertEquals('value1', $stats->getStat('stat-1'));
@@ -81,7 +77,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $data = 'stat-1 = value1' . "\r\n" .
                 'another-stat = 123' . "\r\n" .
                 'test-stat = 0.554';
-        $stats = new BeanstalkStats($data);
+        $stats = new Stats($data);
 
         $this->assertEmpty($stats->getStats());
     }

@@ -4,16 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\ReserveTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandReserve;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/Reserve.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Connection.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Job.php';
+use \Beanstalk\Commands\ReserveCommand as BeanstalkCommandReserve;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -46,16 +38,16 @@ class TestCases extends PHPUnit_Framework_TestCase
     {
         $command = new BeanstalkCommandReserve();
 
-        $conn = $this->getMock('BeanstalkConnection', array('connect'), array('localhost:11300', $this->getMock('BeanstalkConnectionStream')));
+        $conn = $this->getMock('\\Beanstalk\\Connection', array('connect'), array('localhost:11300', $this->getMock('\\Beanstalk\\Connections\\Stream')));
         $job = $command->parseResponse('RESERVED 1244 2048', '{"content":"something"}', $conn);
 
-        $this->assertInstanceOf('BeanstalkJob', $job);
+        $this->assertInstanceOf('\\Beanstalk\\Job', $job);
         $this->assertEquals(1244, $job->getId());
     }
 
     public function testParseResponseOnDeadlineSoon()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::DEADLINE_SOON);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::DEADLINE_SOON);
 
         $command = new BeanstalkCommandReserve();
         $command->parseResponse('DEADLINE_SOON');
@@ -63,7 +55,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnTimedOut()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::TIMED_OUT);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::TIMED_OUT);
 
         $command = new BeanstalkCommandReserve();
         $command->parseResponse('TIMED_OUT');
@@ -71,7 +63,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandReserve();
         $command->parseResponse('This is wack');

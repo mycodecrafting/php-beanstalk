@@ -4,14 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\IgnoreTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandIgnore;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/Ignore.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
+use \Beanstalk\Commands\IgnoreCommand as BeanstalkCommandIgnore;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -53,7 +47,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnNotIgnored()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::NOT_IGNORED);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::NOT_IGNORED);
 
         $command = new BeanstalkCommandIgnore('tube');
         $command->parseResponse('NOT_IGNORED');
@@ -61,7 +55,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandIgnore('tube');
         $command->parseResponse('This is wack');
