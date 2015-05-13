@@ -1,6 +1,10 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Job;
+use \Beanstalk\Exception;
 
 /**
  * Reserve command
@@ -19,7 +23,7 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandReserve extends BeanstalkCommand
+class ReserveCommand extends Command
 {
 
     protected $_timeout = null;
@@ -66,35 +70,35 @@ class BeanstalkCommandReserve extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When trying to reserve another job and the TTR of the current job ends soon
-     * @throws BeanstalkException When the wait timeout exceeded before a job became available
-     * @throws BeanstalkException When any other error occurs
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When trying to reserve another job and the TTR of the current job ends soon
+     * @throws Exception When the wait timeout exceeded before a job became available
+     * @throws Exception When any other error occurs
      * @return BeanstalkJob
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
 		if (preg_match('/^RESERVED (\d+) (\d+)$/', $response, $matches))
         {
-            return new BeanstalkJob($conn, $matches[1], $data);            
+            return new Job($conn, $matches[1], $data);            
         }
 
         if ($response === 'DEADLINE_SOON')
         {
-            throw new BeanstalkException(
+            throw new Exception(
                 'Reserved job TTR ends soon. Delete or release the job before the server automatically releases it.',
-                BeanstalkException::DEADLINE_SOON
+                Exception::DEADLINE_SOON
             );
         }
 
         if ($response === 'TIMED_OUT')
         {
-            throw new BeanstalkException(
-                'The wait timeout exceeded before a job became available', BeanstalkException::TIMED_OUT
+            throw new Exception(
+                'The wait timeout exceeded before a job became available', Exception::TIMED_OUT
             );
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 
 }

@@ -1,13 +1,13 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk;
 
 /**
  * Beanstalk Exceptions
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkException extends Exception
+class Exception extends \Exception
 {
 
     /**
@@ -90,7 +90,7 @@ class BeanstalkException extends Exception
      */
     const SERVER_WRITE          = 6051;
 
-    public function __construct($message, $code = 0, Exception $previous = null)
+    public function __construct($message, $code = 0, \Exception $previous = null)
     {
         $this->code = $code;
         $message = sprintf('%s: %s', $this->getCodeAsString(), $message);

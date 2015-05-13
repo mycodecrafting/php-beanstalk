@@ -4,16 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\PeekTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandPeek;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/Peek.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Job.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Connection.php';
+use \Beanstalk\Commands\PeekCommand as BeanstalkCommandPeek;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -61,16 +53,16 @@ class TestCases extends PHPUnit_Framework_TestCase
     {
         $command = new BeanstalkCommandPeek(556);
 
-        $conn = $this->getMock('BeanstalkConnection', array('connect'), array('localhost:11300', $this->getMock('BeanstalkConnectionStream')));
+        $conn = $this->getMock('\\Beanstalk\\Connection', array('connect'), array('localhost:11300', $this->getMock('\\Beanstalk\\Connections\\Stream')));
         $job = $command->parseResponse('FOUND 556 2048', '{"content":"something"}', $conn);
 
-        $this->assertInstanceOf('BeanstalkJob', $job);
+        $this->assertInstanceOf('\\Beanstalk\\Job', $job);
         $this->assertEquals(556, $job->getId());
     }
 
     public function testParseResponseOnNotFound()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::NOT_FOUND);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::NOT_FOUND);
 
         $command = new BeanstalkCommandPeek(556);
         $command->parseResponse('NOT_FOUND');
@@ -78,7 +70,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandPeek(556);
         $command->parseResponse('This is wack');

@@ -4,14 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\ReleaseTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandRelease;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/Release.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
+use \Beanstalk\Commands\ReleaseCommand as BeanstalkCommandRelease;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -45,7 +39,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnBuried()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::BURIED);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::BURIED);
 
         $command = new BeanstalkCommandRelease(1098, 1024, 5);
         $command->parseResponse('BURIED');
@@ -53,7 +47,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnNotFound()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::NOT_FOUND);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::NOT_FOUND);
 
         $command = new BeanstalkCommandRelease(1098, 1024, 5);
         $command->parseResponse('NOT_FOUND');
@@ -61,7 +55,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandRelease(1098, 1024, 5);
         $command->parseResponse('This is wack');

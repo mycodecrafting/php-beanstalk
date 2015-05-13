@@ -1,8 +1,8 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+namespace Beanstalk;
 
-
-class BeanstalkStats
+class Stats
 {
 
     protected $_stats = array();

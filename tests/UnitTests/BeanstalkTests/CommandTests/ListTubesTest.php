@@ -4,14 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\ListTubesTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandListTubes;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/ListTubes.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
+use \Beanstalk\Commands\ListTubesCommand as BeanstalkCommandListTubes;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -60,7 +54,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $this->command->parseResponse('This is wack');
     }

@@ -4,15 +4,9 @@
 namespace UnitTests\BeanstalkTests\CommandTests\PutTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandPut;
-use \BeanstalkException;
+use \Beanstalk\Commands\PutCommand as BeanstalkCommandPut;
+use \Beanstalk\Exception as BeanstalkException;
 use \stdClass;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/Put.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -83,7 +77,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnBuried()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::BURIED);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::BURIED);
 
         $command = new BeanstalkCommandPut('Hello World!', 1024, 0, 120);
         $command->parseResponse('BURIED 234');
@@ -91,7 +85,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnMissingCrLf()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::EXPECTED_CRLF);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::EXPECTED_CRLF);
 
         $command = new BeanstalkCommandPut('Hello World!', 1024, 0, 120);
         $command->parseResponse('EXPECTED_CRLF');
@@ -99,7 +93,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnJobTooBig()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::JOB_TOO_BIG);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::JOB_TOO_BIG);
 
         $command = new BeanstalkCommandPut('Hello World!', 1024, 0, 120);
         $command->parseResponse('JOB_TOO_BIG');
@@ -107,7 +101,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandPut('Hello World!', 1024, 0, 120);
         $command->parseResponse('This is wack');

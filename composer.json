@@ -1,0 +1,25 @@
+{
+    "name": "Tubular",
+    "description": "PHP Beanstalk Client",
+    "version": "1.0.0",
+    "type": "package",
+    "authors": [
+        {
+            "name": "Joshua Dechant",
+            "role": "Developer"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Beanstalk\\": "lib/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    }
+}

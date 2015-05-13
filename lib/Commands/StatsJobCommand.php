@@ -1,6 +1,10 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Stats;
+use \Beanstalk\Exception;
 
 /**
  * The stats-job command gives statistical information about the specified job if it exists
@@ -23,7 +27,7 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandStatsJob extends BeanstalkCommand
+class StatsJobCommand extends Command
 {
 
     protected $_id;
@@ -63,24 +67,24 @@ class BeanstalkCommandStatsJob extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When the job does not exist
-     * @throws BeanstalkException When any other error occurs
-     * @return BeanstalkStats
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When the job does not exist
+     * @throws Exception When any other error occurs
+     * @return Stats
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
 		if (preg_match('/^OK (\d+)$/', $response, $matches))
         {
-            return new BeanstalkStats($data);
+            return new Stats($data);
         }
 
         if ($response === 'NOT_FOUND')
         {
-            throw new BeanstalkException('The job does not exist.', BeanstalkException::NOT_FOUND);
+            throw new Exception('The job does not exist.', Exception::NOT_FOUND);
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 
 }

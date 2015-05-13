@@ -4,14 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\PauseTubeTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandPauseTube;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/PauseTube.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
+use \Beanstalk\Commands\PauseTubeCommand as BeanstalkCommandPauseTube;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -51,7 +45,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnNotFound()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::NOT_FOUND);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::NOT_FOUND);
 
         $command = new BeanstalkCommandPauseTube('tube-name', 30);
         $command->parseResponse('NOT_FOUND');
@@ -59,7 +53,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandPauseTube('tube-name', 30);
         $command->parseResponse('This is wack');

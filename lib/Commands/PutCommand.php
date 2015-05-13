@@ -1,13 +1,16 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Exception;
 
 /**
  * The "put" command is for any process that wants to insert a job into the queue
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandPut extends BeanstalkCommand
+class PutCommand extends Command
 {
 
     /**
@@ -70,14 +73,14 @@ class BeanstalkCommandPut extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When the server runs out of memory
-     * @throws BeanstalkException When the job body is malformed
-     * @throws BeanstalkException When the job body is larger than max-job-size in the server
-     * @throws BeanstalkException When any other error occurs
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When the server runs out of memory
+     * @throws Exception When the job body is malformed
+     * @throws Exception When the job body is larger than max-job-size in the server
+     * @throws Exception When any other error occurs
      * @return integer Id of the inserted job
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
 		if (preg_match('/^INSERTED (\d+)$/', $response, $matches))
 		{
@@ -86,28 +89,28 @@ class BeanstalkCommandPut extends BeanstalkCommand
 
         if (preg_match('/^BURIED (\d+)$/', $response, $matches))
 		{
-            throw new BeanstalkException(
-                'The server ran out of memory trying to grow the priority queue data structure.', BeanstalkException::BURIED
+            throw new Exception(
+                'The server ran out of memory trying to grow the priority queue data structure.', Exception::BURIED
             );
 		}
 
         if ($response === 'EXPECTED_CRLF')
 		{
-		    throw new BeanstalkException(
+		    throw new Exception(
 		        'The job body must be followed by a CR-LF pair, that is, "\r\n". These two bytes are not counted in the job ' .
 		        'size given by the client in the put command line.',
-		        BeanstalkException::EXPECTED_CRLF
+		        Exception::EXPECTED_CRLF
 		    );
 		}
 
         if ($response === 'JOB_TOO_BIG')
 		{
-		    throw new BeanstalkException(
-		        'The client has requested to put a job with a body larger than max-job-size bytes.', BeanstalkException::JOB_TOO_BIG
+		    throw new Exception(
+		        'The client has requested to put a job with a body larger than max-job-size bytes.', Exception::JOB_TOO_BIG
 		    );
 		}
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 
 }

@@ -1,8 +1,10 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+namespace Beanstalk\Connections\Streams\Sockets;
 
+use \Beanstalk\Connections\Streams\Socket;
 
-class BeanstalkConnectionStreamSocketDebug extends BeanstalkConnectionStreamSocket
+class Debug extends Socket
 {
 
     public function open($host, $port, $timeout)

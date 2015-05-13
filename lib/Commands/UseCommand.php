@@ -1,6 +1,9 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Exception;
 
 /**
  * Use command
@@ -11,7 +14,7 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandUse extends BeanstalkCommand
+class UseCommand extends Command
 {
 
     protected $_tube;
@@ -20,13 +23,13 @@ class BeanstalkCommandUse extends BeanstalkCommand
      * Constructor
      *
      * @param string $tube The tube to use. If the tube does not exist, it will be created.
-     * @throws BeanstalkException When $tube exceeds 200 bytes
+     * @throws Exception When $tube exceeds 200 bytes
      */
     public function __construct($tube)
     {
         if (strlen($tube) > 200)
         {
-            throw new BeanstalkException('Tube name must be at most 200 bytes', BeanstalkException::TUBE_NAME_TOO_LONG);
+            throw new Exception('Tube name must be at most 200 bytes', Exception::TUBE_NAME_TOO_LONG);
         }
 
         $this->_tube = $tube;
@@ -47,18 +50,18 @@ class BeanstalkCommandUse extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When any error occurs
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When any error occurs
      * @return string The name of the tube now being used
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
 		if (preg_match('/^USING (.+)$/', $response, $matches))
 		{
 		    return $matches[1];
 		}
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 
 }

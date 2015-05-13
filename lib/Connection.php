@@ -1,13 +1,32 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+namespace Beanstalk;
 
+use \Beanstalk\Connections\Stream;
+use \Beanstalk\Exception;
+use \Beanstalk\Commands\PutCommand;
+use \Beanstalk\Commands\UseCommand;
+use \Beanstalk\Commands\WatchCommand;
+use \Beanstalk\Commands\IgnoreCommand;
+use \Beanstalk\Commands\ReserveCommand;
+use \Beanstalk\Commands\DeleteCommand;
+use \Beanstalk\Commands\TouchCommand;
+use \Beanstalk\Commands\PauseTubeCommand;
+use \Beanstalk\Commands\ListTubesCommand;
+use \Beanstalk\Commands\StatsTubeCommand;
+use \Beanstalk\Commands\StatsJobCommand;
+use \Beanstalk\Commands\ReleaseCommand;
+use \Beanstalk\Commands\StatsCommand;
+use \Beanstalk\Commands\PeekCommand;
+use \Beanstalk\Commands\KickCommand;
+use \Beanstalk\Commands\BuryCommand;
 
 /**
  * Beanstalkd connection
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkConnection
+class Connection
 {
 
     protected $_address;
@@ -20,9 +39,9 @@ class BeanstalkConnection
      * @param string $address Beanstalkd server address in the format "host:port"
      * @param BeanstalkConnectionStream $stream Stream to use for connection
      * @param float $timeout Connection timeout in milliseconds
-     * @throws BeanstalkException When a connection cannot be established
+     * @throws Exception When a connection cannot be established
      */
-    public function __construct($address, BeanstalkConnectionStream $stream, $timeout = 500)
+    public function __construct($address, Stream $stream, $timeout = 500)
     {
         $this->_address = $address;
         $this->_stream = $stream;
@@ -33,7 +52,7 @@ class BeanstalkConnection
     /**
      * Connect to the beanstalkd server
      *
-     * @throws BeanstalkException When a connection cannot be established
+     * @throws Exception When a connection cannot be established
      * @return boolean
      */
     public function connect()
@@ -41,7 +60,7 @@ class BeanstalkConnection
         list($host, $port) = explode(':', $this->getServer());
         if ($this->_stream->open($host, $port, $this->getTimeout()) === false)
         {
-            throw new BeanstalkException(sprintf('Cannot connect to server %s', $this->getServer()), BeanstalkException::SERVER_OFFLINE);
+            throw new Exception(sprintf('Cannot connect to server %s', $this->getServer()), Exception::SERVER_OFFLINE);
         }
 
         return true;
@@ -123,7 +142,7 @@ class BeanstalkConnection
      */
     public function put($message, $priority = 65536, $delay = 0, $ttr = 120)
     {
-        return $this->_dispatch(new BeanstalkCommandPut($message, $priority, $delay, $ttr));
+        return $this->_dispatch(new PutCommand($message, $priority, $delay, $ttr));
     }
 
     /**
@@ -137,7 +156,7 @@ class BeanstalkConnection
      */
     public function useTube($tube)
     {
-        return $this->_dispatch(new BeanstalkCommandUse($tube));
+        return $this->_dispatch(new UseCommand($tube));
     }
 
     /**
@@ -152,7 +171,7 @@ class BeanstalkConnection
      */
     public function watchTube($tube)
     {
-        return $this->_dispatch(new BeanstalkCommandWatch($tube));
+        return $this->_dispatch(new WatchCommand($tube));
     }
 
     /**
@@ -165,7 +184,7 @@ class BeanstalkConnection
      */
     public function ignoreTube($tube)
     {
-        return $this->_dispatch(new BeanstalkCommandIgnore($tube));
+        return $this->_dispatch(new IgnoreCommand($tube));
     }
 
     /**
@@ -187,7 +206,7 @@ class BeanstalkConnection
      */
     public function reserve($timeout = null)
     {
-        return $this->_dispatch(new BeanstalkCommandReserve($timeout));
+        return $this->_dispatch(new ReserveCommand($timeout));
     }
 
     /**
@@ -198,12 +217,12 @@ class BeanstalkConnection
      * delete jobs that it has reserved, ready jobs, and jobs that are buried.
      *
      * @param integer $id The job id to delete
-     * @throws BeanstalkException
+     * @throws Exception
      * @return boolean
      */
     public function delete($id)
     {
-        return $this->_dispatch(new BeanstalkCommandDelete($id));
+        return $this->_dispatch(new DeleteCommand($id));
     }
 
     /**
@@ -216,12 +235,12 @@ class BeanstalkConnection
      * (e.g. it may do this on DEADLINE_SOON).
      *
      * @param integer $id The job id to touch
-     * @throws BeanstalkException
+     * @throws Exception
      * @return boolean
      */
     public function touch($id)
     {
-        return $this->_dispatch(new BeanstalkCommandTouch($id));
+        return $this->_dispatch(new TouchCommand($id));
     }
 
     /**
@@ -237,7 +256,7 @@ class BeanstalkConnection
      */
     public function release($id, $priority, $delay)
     {
-        return $this->_dispatch(new BeanstalkCommandRelease($id, $priority, $delay));
+        return $this->_dispatch(new ReleaseCommand($id, $priority, $delay));
     }
 
     /**
@@ -252,7 +271,7 @@ class BeanstalkConnection
      */
     public function bury($id, $priority)
     {
-        return $this->_dispatch(new BeanstalkCommandBury($id, $priority));
+        return $this->_dispatch(new BuryCommand($id, $priority));
     }
 
     /**
@@ -267,52 +286,52 @@ class BeanstalkConnection
      */
     public function kick($bound)
     {
-        return $this->_dispatch(new BeanstalkCommandKick($bound));
+        return $this->_dispatch(new KickCommand($bound));
     }
 
     /**
      * Return job $id
      *
      * @param integer $id Id of job to return
-     * @throws BeanstalkException When job cannot be found
+     * @throws Exception When job cannot be found
      * @return BeanstalkJob
      */
     public function peek($id)
     {
-        return $this->_dispatch(new BeanstalkCommandPeek($id));
+        return $this->_dispatch(new PeekCommand($id));
     }
 
     /**
      * Return the next ready job
      *
-     * @throws BeanstalkException When no jobs in ready state
+     * @throws Exception When no jobs in ready state
      * @return BeanstalkJob
      */
     public function peekReady()
     {
-        return $this->_dispatch(new BeanstalkCommandPeek('ready'));
+        return $this->_dispatch(new PeekCommand('ready'));
     }
 
     /**
      * Return the delayed job with the shortest delay left
      *
-     * @throws BeanstalkException When no jobs in delayed state
+     * @throws Exception When no jobs in delayed state
      * @return BeanstalkJob
      */
     public function peekDelayed()
     {
-        return $this->_dispatch(new BeanstalkCommandPeek('delayed'));
+        return $this->_dispatch(new PeekCommand('delayed'));
     }
 
     /**
      * Return the next job in the list of buried jobs
      *
-     * @throws BeanstalkException When no jobs in buried state
+     * @throws Exception When no jobs in buried state
      * @return BeanstalkJob
      */
     public function peekBuried()
     {
-        return $this->_dispatch(new BeanstalkCommandPeek('buried'));
+        return $this->_dispatch(new PeekCommand('buried'));
     }
 
     /**
@@ -320,31 +339,31 @@ class BeanstalkConnection
      */
     public function stats()
     {
-        return $this->_dispatch(new BeanstalkCommandStats());
+        return $this->_dispatch(new StatsCommand());
     }
 
     /**
      * The stats-job command gives statistical information about the specified job if it exists.
      *
      * @param integer $id The job id to get stats on
-     * @throws BeanstalkException When the job does not exist
+     * @throws Exception When the job does not exist
      * @return BeanstalkStats
      */
     public function statsJob($id)
     {
-        return $this->_dispatch(new BeanstalkCommandStatsJob($id));
+        return $this->_dispatch(new StatsJobCommand($id));
     }
 
     /**
      * The stats-tube command gives statistical information about the specified tube if it exists.
      *
      * @param string $tube is a name at most 200 bytes. Stats will be returned for this tube.
-     * @throws BeanstalkException When the tube does not exist
+     * @throws Exception When the tube does not exist
      * @return BeanstalkStats
      */
     public function statsTube($tube)
     {
-        return $this->_dispatch(new BeanstalkCommandStatsTube($tube));
+        return $this->_dispatch(new StatsTubeCommand($tube));
     }
 
     /**
@@ -352,7 +371,7 @@ class BeanstalkConnection
      */
     public function listTubes()
     {
-        return $this->_dispatch(new BeanstalkCommandListTubes());
+        return $this->_dispatch(new ListTubesCommand());
     }
 
     /**
@@ -360,12 +379,12 @@ class BeanstalkConnection
      *
      * @param string $tube The tube to pause
      * @param integer $delay Number of seconds to wait before reserving any more jobs from the queue
-     * @throws BeanstalkException
+     * @throws Exception
      * @return boolean
      */
     public function pauseTube($tube, $delay)
     {
-        $this->_dispatch(new BeanstalkCommandPauseTube($tube, $delay));
+        $this->_dispatch(new PauseTubeCommand($tube, $delay));
         return true;
     }
 
@@ -374,50 +393,50 @@ class BeanstalkConnection
      *
      * @param string $response
      * @return boolean true when response is valid
-     * @throws BeanstalkException When response is invalid
+     * @throws Exception When response is invalid
      */
     public function validateResponse($response)
     {
         if ($response === false)
         {
-            throw new BeanstalkException(
+            throw new Exception(
                 'Error reading data from the server.',
-                BeanstalkException::SERVER_READ
+                Exception::SERVER_READ
             );
         }
 
         if ($response === 'BAD_FORMAT')
         {
-            throw new BeanstalkException(
+            throw new Exception(
                 'The client sent a command line that was not well-formed. ' .
                 'This can happen if the line does not end with \r\n, if non-numeric ' .
                 'characters occur where an integer is expected, if the wrong number of ' .
                 'arguments are present, or if the command line is mal-formed in any other way.',
-                BeanstalkException::BAD_FORMAT
+                Exception::BAD_FORMAT
             );
         }
 
         if ($response === 'OUT_OF_MEMORY')
         {
-            throw new BeanstalkException(
+            throw new Exception(
                 'The server cannot allocate enough memory for the job. The client should try again later.',
-                BeanstalkException::OUT_OF_MEMORY
+                Exception::OUT_OF_MEMORY
             );
         }
 
         if ($response === 'UNKNOWN_COMMAND')
         {
-            throw new BeanstalkException(
-                'The client sent a command that the server does not know.', BeanstalkException::UNKNOWN_COMMAND
+            throw new Exception(
+                'The client sent a command that the server does not know.', Exception::UNKNOWN_COMMAND
             );
         }
 
         if ($response === 'INTERNAL_ERROR')
         {
-            throw new BeanstalkException(
+            throw new Exception(
                 'This indicates a bug in the server. It should never happen. ' .
                 'If it does happen, please report it at http://groups.google.com/group/beanstalk-talk.',
-                BeanstalkException::INTERNAL_ERROR
+                Exception::INTERNAL_ERROR
             );
         }
 
@@ -427,11 +446,11 @@ class BeanstalkConnection
     /**
      * Send a command to beanstalkd and return the result
      *
-     * @param BeanstalkCommand $command
-     * @return mixed Result of BeanstalkCommand::parseResponse()
-     * @throws BeanstalkException
+     * @param Command $command
+     * @return mixed Result of Command::parseResponse()
+     * @throws Exception
      */
-    protected function _dispatch(BeanstalkCommand $command)
+    protected function _dispatch(Command $command)
     {
         // re-connect if we have timed out
         if ($this->isTimedOut() === true)
@@ -451,9 +470,9 @@ class BeanstalkConnection
         // write to stream
         if ($this->_stream->write($message) === false)
         {
-            throw new BeanstalkException(
+            throw new Exception(
                 'Error writing data to the server.',
-                BeanstalkException::SERVER_WRITE
+                Exception::SERVER_WRITE
             );
         }
 

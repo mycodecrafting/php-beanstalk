@@ -4,15 +4,8 @@
 namespace UnitTests\BeanstalkTests\CommandTests\StatsTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandStats;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/Stats.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Stats.php';
+use \Beanstalk\Commands\StatsCommand as BeanstalkCommandStats;
+use \Beanstalk\Exception as BeanstalkException;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
@@ -38,12 +31,12 @@ class TestCases extends PHPUnit_Framework_TestCase
     public function testParseResponseOnSuccessReturnsBeanstalkStats()
     {
         $command = new BeanstalkCommandStats();
-        $this->assertInstanceOf('BeanstalkStats', $command->parseResponse('OK 256'));
+        $this->assertInstanceOf('\\Beanstalk\\Stats', $command->parseResponse('OK 256'));
     }
 
     public function testParseResponseOnError()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN);
 
         $command = new BeanstalkCommandStats();
         $command->parseResponse('This is wack');

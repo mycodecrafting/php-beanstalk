@@ -1,13 +1,15 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+namespace Beanstalk\Connections\Streams;
 
+use \Beanstalk\Connections\Stream;
 
 /**
  * Connection stream using PHP native sockets
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkConnectionStreamSocket implements BeanstalkConnectionStream
+class Socket implements Stream
 {
 
     protected $_socket;

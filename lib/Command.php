@@ -1,6 +1,6 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk;
 
 /**
  * Abstract beanstalk command.
@@ -10,7 +10,7 @@
  * @abstract
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-abstract class BeanstalkCommand
+abstract class Command
 {
 
     /**
@@ -53,6 +53,6 @@ abstract class BeanstalkCommand
      * @throws BeanstalkException On failure
      * @return mixed On success
      */
-    abstract public function parseResponse($response, $data = null, BeanstalkConnection $conn = null);
+    abstract public function parseResponse($response, $data = null, Connection $conn = null);
 
 }

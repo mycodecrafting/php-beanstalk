@@ -1,16 +1,16 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk;
 
 /**
  * Beanstalkd connection pool
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkPool
+class Pool
 {
 
-    protected $_streamClass = 'BeanstalkConnectionStreamSocket';
+    protected $_streamClass = '\\Beanstalk\\Connections\\Streams\\Socket';
 
     /**
      * Sets the stream class to use for the connections in the pool
@@ -72,7 +72,7 @@ class BeanstalkPool
         {
             $this->connect();
         }
-        catch (BeanstalkException $e)
+        catch (Exception $e)
         {
         }
 
@@ -125,7 +125,7 @@ class BeanstalkPool
             {
                 try
                 {
-                    $this->_connections[$address] = new BeanstalkConnection($address, new $this->_streamClass, $this->getTimeout());
+                    $this->_connections[$address] = new Connection($address, new $this->_streamClass, $this->getTimeout());
 
                     // issue certain commands on (re)connection
                     foreach ($this->_watching as $tube)
@@ -145,7 +145,7 @@ class BeanstalkPool
                 }
 
                 // silently fail if a server is offline
-                catch (BeanstalkException $e)
+                catch (Exception $e)
                 {
                     unset($this->_connections[$address]);
                 }
@@ -155,7 +155,7 @@ class BeanstalkPool
         // no connections!
         if (count($this->_connections) === 0)
         {
-            throw new BeanstalkException('Could not establish a connection to any beanstalkd server in the pool.');
+            throw new Exception('Could not establish a connection to any beanstalkd server in the pool.');
         }
     }
 
@@ -301,7 +301,7 @@ class BeanstalkPool
      *
      * @param string $tube The tube to pause
      * @param integer $delay Number of seconds to wait before reserving any more jobs from the queue
-     * @throws BeanstalkException
+     * @throws Exception
      * @return boolean
      */
     public function pauseTube($tube, $delay)

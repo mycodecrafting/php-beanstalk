@@ -4,17 +4,14 @@
 namespace UnitTests\BeanstalkTests\PoolTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkPool;
-
-require_once 'PHPUnit/Autoload.php';
-require_once dirname(__FILE__) . '/../../../lib/Beanstalk.php';
+use \Beanstalk\Pool;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
 
     protected function setUp()
     {
-        $this->pool = new BeanstalkPool();
+        $this->pool = new Pool();
     }
 
     public function testHasNoServersByDefault()
@@ -58,7 +55,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testConnectThrowsExceptionWhenAllServersOffline()
     {
-        $this->setExpectedException('BeanstalkException', 'Unknown: Could not establish a connection to any beanstalkd server in the pool.');
+        $this->setExpectedException('\\Beanstalk\\Exception', 'Unknown: Could not establish a connection to any beanstalkd server in the pool.');
 
         $this->pool->addServer('server1');
         $this->pool->addServer('server2');
@@ -119,7 +116,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamPutWriteCount');
         $this->pool->put('Hello World!');
 
-        $this->assertInstanceOf('BeanstalkConnection', $this->pool->getLastConnection());
+        $this->assertInstanceOf('\\Beanstalk\\Connection', $this->pool->getLastConnection());
     }
 
     public function testUseSendsToAllConnections()
@@ -375,7 +372,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
 }
 
-class TestBeanstalkConnectionStreamOffline implements \BeanstalkConnectionStream
+class TestBeanstalkConnectionStreamOffline implements \Beanstalk\Connections\Stream
 {
 
     public function open($host, $port, $timeout)
@@ -409,7 +406,7 @@ class TestBeanstalkConnectionStreamOffline implements \BeanstalkConnectionStream
 
 }
 
-class TestBeanstalkConnectionStreamOnline implements \BeanstalkConnectionStream
+class TestBeanstalkConnectionStreamOnline implements \Beanstalk\Connections\Stream
 {
 
     public function open($host, $port, $timeout)

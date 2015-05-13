@@ -1,13 +1,16 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Exception;
 
 /**
  * The list-tubes command returns a list of all existing tubes
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandListTubes extends BeanstalkCommand
+class ListTubesCommand extends Command
 {
 
     /**
@@ -35,11 +38,11 @@ class BeanstalkCommandListTubes extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When any error occurs
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When any error occurs
      * @return array List of all existing tubes
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
 		if (preg_match('/^OK (\d+)$/', $response, $matches))
         {
@@ -47,7 +50,7 @@ class BeanstalkCommandListTubes extends BeanstalkCommand
             return $matches[1];
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 
 }

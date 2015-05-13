@@ -1,6 +1,9 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Exception;
 
 /**
  * Kick command
@@ -11,7 +14,7 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandKick extends BeanstalkCommand
+class KickCommand extends Command
 {
 
     protected $_bound;
@@ -41,18 +44,18 @@ class BeanstalkCommandKick extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When any error occurs
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When any error occurs
      * @return integer The number of jobs actually kicked
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
 		if (preg_match('/^KICKED (.+)$/', $response, $matches))
 		{
 		    return intval($matches[1]);
 		}
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 
 }

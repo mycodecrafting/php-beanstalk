@@ -1,6 +1,10 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Job;
+use \Beanstalk\Exception;
 
 /**
  * The peek commands let the client inspect a job in the system
@@ -13,7 +17,7 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandPeek extends BeanstalkCommand
+class PeekCommand extends Command
 {
 
     protected $_what;
@@ -64,23 +68,23 @@ class BeanstalkCommandPeek extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When the job doesn't exist or there are no jobs in the requested state
-     * @throws BeanstalkException When any other error occurs
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When the job doesn't exist or there are no jobs in the requested state
+     * @throws Exception When any other error occurs
      * @return BeanstalkJob
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
 		if (preg_match('/^FOUND (\d+) (\d+)$/', $response, $matches))
         {
-            return new BeanstalkJob($conn, $matches[1], $data);
+            return new Job($conn, $matches[1], $data);
         }
 
         if ($response === 'NOT_FOUND')
         {
-            throw new BeanstalkException('The requested job doesn\'t exist or there are no jobs in the requested state.', BeanstalkException::NOT_FOUND);
+            throw new Exception('The requested job doesn\'t exist or there are no jobs in the requested state.', Exception::NOT_FOUND);
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 }

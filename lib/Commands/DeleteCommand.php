@@ -1,6 +1,9 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Exception;
 
 /**
  * Delete command
@@ -11,7 +14,7 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandDelete extends BeanstalkCommand
+class DeleteCommand extends Command
 {
 
     protected $_id = null;
@@ -41,12 +44,12 @@ class BeanstalkCommandDelete extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When the job cannot be found or has already timed out
-     * @throws BeanstalkException When any other error occurs
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When the job cannot be found or has already timed out
+     * @throws Exception When any other error occurs
      * @return boolean True if command was successful
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
         if ($response === 'DELETED')
         {
@@ -55,14 +58,14 @@ class BeanstalkCommandDelete extends BeanstalkCommand
 
         if ($response === 'NOT_FOUND')
         {
-		    throw new BeanstalkException(
+		    throw new Exception(
 		        'The job does not exist or is not either reserved by the client, ready, or buried. ' .
 		        'This could happen if the job timed out before the client sent the delete command.',
-		        BeanstalkException::NOT_FOUND
+		        Exception::NOT_FOUND
             );
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 
 }

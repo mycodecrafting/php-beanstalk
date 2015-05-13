@@ -1,6 +1,9 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Exception;
 
 /**
  * Release command
@@ -11,7 +14,7 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandRelease extends BeanstalkCommand
+class ReleaseCommand extends Command
 {
 
     protected $_id = null;
@@ -47,13 +50,13 @@ class BeanstalkCommandRelease extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When the server runs out of memory
-     * @throws BeanstalkException When the job cannot be found or has already timed out
-     * @throws BeanstalkException When any other error occurs
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When the server runs out of memory
+     * @throws Exception When the job cannot be found or has already timed out
+     * @throws Exception When any other error occurs
      * @return boolean True if command was successful
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
         if ($response === 'RELEASED')
         {
@@ -62,19 +65,19 @@ class BeanstalkCommandRelease extends BeanstalkCommand
 
         if ($response === 'BURIED')
         {
-            throw new BeanstalkException(
-                'The server ran out of memory trying to grow the priority queue data structure.', BeanstalkException::BURIED
+            throw new Exception(
+                'The server ran out of memory trying to grow the priority queue data structure.', Exception::BURIED
             );
         }
 
         if ($response === 'NOT_FOUND')
         {
-		    throw new BeanstalkException(
-		        'The job does not exist or is not reserved by the client.', BeanstalkException::NOT_FOUND
+		    throw new Exception(
+		        'The job does not exist or is not reserved by the client.', Exception::NOT_FOUND
 		    );
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 
 }

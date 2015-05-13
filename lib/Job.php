@@ -1,13 +1,13 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk;
 
 /**
  * A Beanstalkd job
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkJob
+class Job
 {
 
     /**
@@ -17,7 +17,7 @@ class BeanstalkJob
      * @param integer $id Job id
      * @param string $message Job body. If the body is JSON, it will be converted to an object
      */
-    public function __construct(BeanstalkConnection $conn, $id, $message)
+    public function __construct(Connection $conn, $id, $message)
     {
         $this->_conn = $conn;
         $this->_id = $id;

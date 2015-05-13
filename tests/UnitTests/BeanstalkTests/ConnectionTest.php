@@ -4,18 +4,16 @@
 namespace UnitTests\BeanstalkTests\ConnectionTest;
 
 use \PHPUnit_Framework_TestCase;
-use \BeanstalkConnection;
-use \BeanstalkException;
+use \Beanstalk\Connection as BeanstalkConnection;
+use \Beanstalk\Exception as BeanstalkException;
 
-require_once 'PHPUnit/Autoload.php';
-require_once dirname(__FILE__) . '/../../../lib/Beanstalk.php';
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
 
     protected function setUp()
     {
-        $this->stream = $this->getMockForAbstractClass('BeanstalkConnectionStream');
+        $this->stream = $this->getMockForAbstractClass('\\Beanstalk\\Connections\\Stream');
         $this->conn = new BeanstalkConnection('server:port', $this->stream);
     }
 
@@ -134,7 +132,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->with($this->equalTo('2048'))
                      ->will($this->returnValue('{"content":"something"}'));
 
-        $this->assertInstanceOf('BeanstalkJob', $this->conn->reserve());
+        $this->assertInstanceOf('\\Beanstalk\\Job', $this->conn->reserve());
     }
 
     public function testReserveTimeoutWritesToStream()
@@ -152,7 +150,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->with($this->equalTo('2048'))
                      ->will($this->returnValue('{"content":"something"}'));
 
-        $this->assertInstanceOf('BeanstalkJob', $this->conn->reserve(10));
+        $this->assertInstanceOf('\\Beanstalk\\Job', $this->conn->reserve(10));
     }
 
     public function testDeleteWritesToStream()
@@ -235,7 +233,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->with($this->equalTo('2048'))
                      ->will($this->returnValue('{"content":"something"}'));
 
-        $this->assertInstanceOf('BeanstalkJob', $this->conn->peek(556));
+        $this->assertInstanceOf('\\Beanstalk\\Job', $this->conn->peek(556));
     }
 
     public function testPeekReadyWritesToStream()
@@ -253,7 +251,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->with($this->equalTo('2048'))
                      ->will($this->returnValue('{"content":"something"}'));
 
-        $this->assertInstanceOf('BeanstalkJob', $this->conn->peekReady());
+        $this->assertInstanceOf('\\Beanstalk\\Job', $this->conn->peekReady());
     }
 
     public function testPeekDelayedWritesToStream()
@@ -271,7 +269,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->with($this->equalTo('2048'))
                      ->will($this->returnValue('{"content":"something"}'));
 
-        $this->assertInstanceOf('BeanstalkJob', $this->conn->peekDelayed());
+        $this->assertInstanceOf('\\Beanstalk\\Job', $this->conn->peekDelayed());
     }
 
     public function testPeekBuriedWritesToStream()
@@ -289,7 +287,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->with($this->equalTo('2048'))
                      ->will($this->returnValue('{"content":"something"}'));
 
-        $this->assertInstanceOf('BeanstalkJob', $this->conn->peekBuried());
+        $this->assertInstanceOf('\\Beanstalk\\Job', $this->conn->peekBuried());
     }
 
     public function testStatsWritesToStream()
@@ -307,7 +305,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->with($this->equalTo('256'))
                      ->will($this->returnValue('stat: value'));
 
-        $this->assertInstanceOf('BeanstalkStats', $this->conn->stats());
+        $this->assertInstanceOf('\\Beanstalk\\Stats', $this->conn->stats());
     }
 
     public function testStatsJobWritesToStream()
@@ -325,7 +323,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->with($this->equalTo('256'))
                      ->will($this->returnValue('stat: value'));
 
-        $this->assertInstanceOf('BeanstalkStats', $this->conn->statsJob('123'));
+        $this->assertInstanceOf('\\Beanstalk\\Stats', $this->conn->statsJob('123'));
     }
 
     public function testStatsTubeWritesToStream()
@@ -343,7 +341,7 @@ class TestCases extends PHPUnit_Framework_TestCase
                      ->with($this->equalTo('256'))
                      ->will($this->returnValue('stat: value'));
 
-        $this->assertInstanceOf('BeanstalkStats', $this->conn->statsTube('test_tube'));
+        $this->assertInstanceOf('\\Beanstalk\\Stats', $this->conn->statsTube('test_tube'));
     }
 
     public function testListTubesWritesToStream()
@@ -379,31 +377,31 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testValidateResponseFalse()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::SERVER_READ);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::SERVER_READ);
         $this->conn->validateResponse(false);
     }
 
     public function testValidateResponseBadFormat()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::BAD_FORMAT);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::BAD_FORMAT);
         $this->conn->validateResponse('BAD_FORMAT');
     }
 
     public function testValidateResponseOutOfMemory()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::OUT_OF_MEMORY);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::OUT_OF_MEMORY);
         $this->conn->validateResponse('OUT_OF_MEMORY');
     }
 
     public function testValidateResponseUnknownCommand()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN_COMMAND);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::UNKNOWN_COMMAND);
         $this->conn->validateResponse('UNKNOWN_COMMAND');
     }
 
     public function testValidateResponseInternalError()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::INTERNAL_ERROR);
+        $this->setExpectedException('\\Beanstalk\\Exception', '', BeanstalkException::INTERNAL_ERROR);
         $this->conn->validateResponse('INTERNAL_ERROR');
     }
 

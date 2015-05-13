@@ -1,13 +1,16 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
+namespace Beanstalk\Commands;
+use \Beanstalk\Command;
+use \Beanstalk\Connection;
+use \Beanstalk\Exception;
 
 /**
  * The pause-tube command can delay any new job being reserved for a given time
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandPauseTube extends BeanstalkCommand
+class PauseTubeCommand extends Command
 {
 
     protected $_tube;
@@ -40,12 +43,12 @@ class BeanstalkCommandPauseTube extends BeanstalkCommand
      *
      * @param string $response Response line, i.e, first line in response
      * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When the tube does not exist
-     * @throws BeanstalkException When any other error occurs
+     * @param Connection $conn Connection use to send the command
+     * @throws Exception When the tube does not exist
+     * @throws Exception When any other error occurs
      * @return boolean True if command was successful
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
         if ($response === 'PAUSED')
         {
@@ -54,10 +57,10 @@ class BeanstalkCommandPauseTube extends BeanstalkCommand
 
         if ($response === 'NOT_FOUND')
         {
-            throw new BeanstalkException('The tube does not exist.', BeanstalkException::NOT_FOUND);
+            throw new Exception('The tube does not exist.', Exception::NOT_FOUND);
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+	    throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 
 }
