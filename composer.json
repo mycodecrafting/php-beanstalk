@@ -2,7 +2,7 @@
     "name": "Tubular",
     "description": "PHP Beanstalk Client",
     "version": "1.0.0",
-    "type": "library",
+    "type": "package",
     "authors": [
         {
             "name": "Joshua Dechant",
