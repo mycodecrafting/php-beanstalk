@@ -1,45 +1,57 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+namespace Beanstalk;
 
 /**
  * Beanstalkd connection pool
  *
+ * <code>
+ * $beanstalk = (new \Beanstalk\Pool)
+ *     ->addServer('localhost', 11300)
+ *     ->useTube('my-tube');
+ * $beanstalk->put('Hello World!');
+ * </code>
+ *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkPool
+class Pool
 {
 
-    protected $_streamClass = 'BeanstalkConnectionStreamSocket';
+    protected $addresses = [];
+    protected $timeout = 500;
+    protected $lastConnection = false;
+    protected $connections = [];
+    protected $streamClass = '\Beanstalk\Connection\Stream\Socket';
+
+    protected $using = false;
+    protected $watching = [];
+    protected $ignoring = [];
 
     /**
      * Sets the stream class to use for the connections in the pool
      *
-     * @param string $class Name of stream class
+     * @param  string $class Name of stream class
      * @return self
      */
     public function setStream($class)
     {
-        $this->_streamClass = $class;
+        $this->streamClass = $class;
         return $this;
     }
-
-    protected $_addresses = array();
 
     /**
      * Add a beanstalkd server to the pool
      *
-     * @param string $host Server host
-     * @param integer $port Server port
+     * @param  string  $host Server host
+     * @param  integer $port Server port
      * @return self
      */
     public function addServer($host, $port = 11300)
     {
-        $this->_addresses[] = sprintf('%s:%s', $host, $port);
+        $this->addresses[] = sprintf('%s:%s', $host, $port);
         return $this;
     }
-
-    protected $_timeout = 500;
 
     /**
      * Get the current connection timeout
@@ -48,18 +60,19 @@ class BeanstalkPool
      */
     public function getTimeout()
     {
-        return $this->_timeout;
+        return $this->timeout;
     }
 
     /**
      * Set the connection timeout for attempting to connect to servers in the pool
      *
-     * @param float $timeout Connection timeout in milliseconds
+     * @param  float $timeout Connection timeout in milliseconds
      * @return self
      */
     public function setTimeout($timeout)
     {
-        $this->_timeout = (float)$timeout;
+        $this->timeout = (float) $timeout;
+
         return $this;
     }
 
@@ -68,24 +81,18 @@ class BeanstalkPool
      */
     public function getConnections()
     {
-        try
-        {
+        try {
             $this->connect();
-        }
-        catch (BeanstalkException $e)
-        {
+        } catch (Exception $e) {
         }
 
-        return $this->_connections;
+        return $this->connections;
     }
-
-    protected $_lastConnection = false;
 
     public function getLastConnection()
     {
-        if ($this->_lastConnection !== false)
-        {
-            return $this->_connections[$this->_lastConnection];
+        if ($this->lastConnection !== false) {
+            return $this->connections[$this->lastConnection];
         }
 
         return false;
@@ -98,10 +105,8 @@ class BeanstalkPool
      */
     public function getServers()
     {
-        return $this->_addresses;
+        return $this->addresses;
     }
-
-    protected $_connections = array();
 
     /**
      * Establish a connection to all servers in the pool
@@ -109,53 +114,46 @@ class BeanstalkPool
     public function connect()
     {
         // check for timed out servers and remove them from the connection pool
-        foreach ($this->_connections as $address => $conn)
-        {
-            if ($conn->isTimedOut())
-            {
+        foreach ($this->connections as $address => $conn) {
+            if ($conn->isTimedOut()) {
                 $conn->close();
-                unset($this->_connections[$address]);
+                unset($this->connections[$address]);
             }
         }
 
         // attempt to connect/re-connect to any server not actively connected to
-        foreach ($this->_addresses as $address)
-        {
-            if (!isset($this->_connections[$address]))
-            {
-                try
-                {
-                    $this->_connections[$address] = new BeanstalkConnection($address, new $this->_streamClass, $this->getTimeout());
+        foreach ($this->addresses as $address) {
+            if (!isset($this->connections[$address])) {
+                try {
+                    $this->connections[$address] = new Connection(
+                        $address,
+                        new $this->streamClass,
+                        $this->getTimeout()
+                    );
 
                     // issue certain commands on (re)connection
-                    foreach ($this->_watching as $tube)
-                    {
-                        $this->_connections[$address]->watchTube($tube);
+                    foreach ($this->watching as $tube) {
+                        $this->connections[$address]->watchTube($tube);
                     }
 
-                    if ($this->_using !== false)
-                    {
-                        $this->_connections[$address]->useTube($this->_using);
+                    if ($this->using !== false) {
+                        $this->connections[$address]->useTube($this->using);
                     }
 
-                    foreach ($this->_ignoring as $tube)
-                    {
-                        $this->_connections[$address]->ignoreTube($tube);
+                    foreach ($this->ignoring as $tube) {
+                        $this->connections[$address]->ignoreTube($tube);
                     }
-                }
 
                 // silently fail if a server is offline
-                catch (BeanstalkException $e)
-                {
-                    unset($this->_connections[$address]);
+                } catch (Exception $e) {
+                    unset($this->connections[$address]);
                 }
             }
         }
 
         // no connections!
-        if (count($this->_connections) === 0)
-        {
-            throw new BeanstalkException('Could not establish a connection to any beanstalkd server in the pool.');
+        if (count($this->connections) === 0) {
+            throw new Exception('Could not establish a connection to any beanstalkd server in the pool.');
         }
     }
 
@@ -164,38 +162,35 @@ class BeanstalkPool
      */
     public function close()
     {
-        foreach ($this->_connections as $conn)
-        {
+        foreach ($this->connections as $conn) {
             $conn->close();
         }
 
-        $this->_using = false;
-        $this->_watching = array();
-        $this->_ignoring = array();
+        $this->using = false;
+        $this->watching = array();
+        $this->ignoring = array();
     }
 
     /**
      * The "put" command is for any process that wants to insert a job into the queue
      *
-     * @param mixed $message Description
+     * @param mixed   $message  Description
      * @param integer $priority Job priority.
-     *        Jobs with smaller priority values will be scheduled before jobs with larger priorities.
-     *        The most urgent priority is 0; the least urgent priority is 4,294,967,295.
-     * @param integer $delay Number of seconds to wait before putting the job in the ready queue.
-     *        The job will be in the "delayed" state during this time.
-     * @param integer $ttr Time to run. The number of seconds to allow a worker to run this job.
-     *        This time is counted from the moment a worker reserves this job.
-     *        If the worker does not delete, release, or bury the job within
-     *        <ttr> seconds, the job will time out and the server will release the job.
-     *        The minimum ttr is 1. If the client sends 0, the server will silently
-     *        increase the ttr to 1.
+     *                          Jobs with smaller priority values will be scheduled before jobs with larger priorities.
+     *                          The most urgent priority is 0; the least urgent priority is 4,294,967,295.
+     * @param integer $delay    Number of seconds to wait before putting the job in the ready queue.
+     *                          The job will be in the "delayed" state during this time.
+     * @param integer $ttr      Time to run. The number of seconds to allow a worker to run this job.
+     *                          This time is counted from the moment a worker reserves this job.
+     *                          If the worker does not delete, release, or bury the job within
+     *                          <ttr> seconds, the job will time out and the server will release the job.
+     *                          The minimum ttr is 1. If the client sends 0, the server will silently
+     *                          increase the ttr to 1.
      */
     public function put($message, $priority = 65536, $delay = 0, $ttr = 120)
     {
-        return $this->_sendToRandomConnection('put', $message, $priority, $delay, $ttr);
+        return $this->sendToRandomConnection('put', $message, $priority, $delay, $ttr);
     }
-
-    protected $_using = false;
 
     /**
      * Use command
@@ -204,17 +199,16 @@ class BeanstalkPool
      * the tube specified by this command. If no use command has been issued, jobs
      * will be put into the tube named "default".
      *
-     * @param string $tube The tube to use. If the tube does not exist, it will be created.
+     * @param  string $tube The tube to use. If the tube does not exist, it will be created.
      * @return self
      */
     public function useTube($tube)
     {
-        $this->_sendToAllConnections('useTube', $tube);
-        $this->_using = $tube;
+        $this->sendToAllConnections('useTube', $tube);
+        $this->using = $tube;
+
         return $this;
     }
-
-    protected $_watching = array();
 
     /**
      * Watch command
@@ -224,20 +218,18 @@ class BeanstalkPool
      * watch list. For each new connection, the watch list initially consists of one
      * tube, named "default".
      *
-     * @param string $tube Tube to add to the watch list. If the tube doesn't exist, it will be created
+     * @param  string $tube Tube to add to the watch list. If the tube doesn't exist, it will be created
      * @return self
      */
     public function watchTube($tube)
     {
-        $this->_sendToAllConnections('watchTube', $tube);
-        if (!in_array($tube, $this->_watching))
-        {
-            $this->_watching[] = $tube;
+        $this->sendToAllConnections('watchTube', $tube);
+        if (!in_array($tube, $this->watching)) {
+            $this->watching[] = $tube;
         }
+
         return $this;
     }
-
-    protected $_ignoring = array();
 
     /**
      * Ignore command
@@ -245,16 +237,16 @@ class BeanstalkPool
      * The "ignore" command is for consumers. It removes the named tube from the
      * watch list for the current connection.
      *
-     * @param string $tube Tube to remove from the watch list
+     * @param  string $tube Tube to remove from the watch list
      * @return self
      */
     public function ignoreTube($tube)
     {
-        $this->_sendToAllConnections('ignoreTube', $tube);
-        if (!in_array($tube, $this->_ignoring))
-        {
-            $this->_ignoring[] = $tube;
+        $this->sendToAllConnections('ignoreTube', $tube);
+        if (!in_array($tube, $this->ignoring)) {
+            $this->ignoring[] = $tube;
         }
+
         return $this;
     }
 
@@ -277,7 +269,7 @@ class BeanstalkPool
      */
     public function reserve($timeout = null)
     {
-        return $this->_sendToRandomConnection('reserve', $timeout);
+        return $this->sendToRandomConnection('reserve', $timeout);
     }
 
     /**
@@ -285,7 +277,7 @@ class BeanstalkPool
      */
     public function stats()
     {
-        return $this->_sendToAllConnections('stats');
+        return $this->sendToAllConnections('stats');
     }
 
     /**
@@ -293,20 +285,21 @@ class BeanstalkPool
      */
     public function listTubes()
     {
-        return $this->_mergeResponses($this->_sendToAllConnections('listTubes'));
+        return $this->mergeResponses($this->sendToAllConnections('listTubes'));
     }
 
     /**
      * The pause-tube command can delay any new job being reserved for a given time
      *
-     * @param string $tube The tube to pause
-     * @param integer $delay Number of seconds to wait before reserving any more jobs from the queue
-     * @throws BeanstalkException
+     * @param  string             $tube  The tube to pause
+     * @param  integer            $delay Number of seconds to wait before reserving any more jobs from the queue
+     * @throws \Beanstalk\Exception
      * @return boolean
      */
     public function pauseTube($tube, $delay)
     {
-        $this->_sendToAllConnections('pauseTube', $tube, $delay);
+        $this->sendToAllConnections('pauseTube', $tube, $delay);
+
         return true;
     }
 
@@ -317,63 +310,62 @@ class BeanstalkPool
      * the ready queue. If there are any buried jobs, it will only kick buried jobs.
      * Otherwise it will kick delayed jobs
      *
-     * @param integer $bound Upper bound on the number of jobs to kick. Each server will kick no more than $bound jobs.
+     * @param  integer $bound Upper bound on the number of jobs to kick. Each server will kick no more than $bound jobs.
      * @return integer The number of jobs actually kicked
      */
     public function kick($bound)
     {
-        $results = $this->_sendToAllConnections('kick', $bound);
+        $results = $this->sendToAllConnections('kick', $bound);
+
         return array_sum($results);
     }
 
-    protected function _mergeResponses(array $responses)
+    protected function mergeResponses(array $responses)
     {
         $ret = array();
-        foreach ($responses as $response)
-        {
+        foreach ($responses as $response) {
             $ret = array_merge($ret, $response);
         }
+
         return $ret;
     }
 
     /**
      * Sends the command to a random connection in the pool
      */
-    protected function _sendToRandomConnection($command)
+    protected function sendToRandomConnection($command)
     {
         $this->connect();
 
         $args = array();
-        if (func_num_args() > 1)
-        {
+        if (func_num_args() > 1) {
             $args = func_get_args();
             array_shift($args);
         }
 
-        $i = $this->_lastConnection = array_rand($this->_connections);
-        return call_user_func_array(array($this->_connections[$i], $command), $args);
+        $i = $this->lastConnection = array_rand($this->connections);
+
+        return call_user_func_array(array($this->connections[$i], $command), $args);
     }
 
     /**
      * Sends the command to all connections in the pool
      */
-    protected function _sendToAllConnections($command)
+    protected function sendToAllConnections($command)
     {
         $this->connect();
 
         $args = array();
-        if (func_num_args() > 1)
-        {
+        if (func_num_args() > 1) {
             $args = func_get_args();
             array_shift($args);
         }
 
         $ret = array();
-        foreach ($this->_connections as $conn)
-        {
+        foreach ($this->connections as $conn) {
             $ret[] = call_user_func_array(array($conn, $command), $args);
         }
+
         return $ret;
     }
-
 }

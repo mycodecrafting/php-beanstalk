@@ -1,0 +1,25 @@
+{
+    "name": "smarterwebdev/php-beanstalk",
+    "type": "library",
+    "description": "PHP 5.3+ beanstalkd client",
+    "keywords": ["beanstalkd"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joshua Dechant",
+            "email": "jdechant@shapeup.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Beanstalk\\": "lib/Beanstalk/"
+        }
+    }
+}

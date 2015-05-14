@@ -1,9 +1,11 @@
-BeanstalkCommandWatch Class Ref
-===============================
+Beanstalk\\Command\\WatchTube Class Ref
+=======================================
 
-.. php:class:: BeanstalkCommandWatch
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: WatchTube
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: Watch command
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
@@ -15,9 +17,9 @@ BeanstalkCommandWatch Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandWatch::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandWatch::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandWatch::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`WatchTube::__construct` -- Constructor
+    * :php:meth:`WatchTube::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`WatchTube::parseResponse` -- Parse the response for success or failure.
 
 .. php:method:: __construct( $tube )
 
@@ -35,7 +37,7 @@ BeanstalkCommandWatch Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
     :returns: *integer* The number of tubes being watched
     :throws: *BeanstalkException* When any error occurs
 

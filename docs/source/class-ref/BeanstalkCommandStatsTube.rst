@@ -1,24 +1,26 @@
-BeanstalkCommandStatsTube Class Ref
-===================================
+Beanstalk\\Command\\StatsTube Class Ref
+=======================================
 
-.. php:class:: BeanstalkCommandStatsTube
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: StatsTube
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: The stats-tube command gives statistical information about the specified tube if it exists
 
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandStatsTube::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandStatsTube::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandStatsTube::parseResponse` -- Parse the response for success or failure.
-    * :php:meth:`BeanstalkCommandStatsTube::returnsData` -- Does the command return data?
+    * :php:meth:`StatsTube::__construct` -- Constructor
+    * :php:meth:`StatsTube::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`StatsTube::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`StatsTube::returnsData` -- Does the command return data?
 
 .. php:method:: __construct( $tube )
 
     :Description: Constructor
     :param string $tube: Stats will be returned for this tube.
-    :throws: *BeanstalkException* When $tube exceeds 200 bytes
+    :throws: *\Beanstalk\Exception* When $tube exceeds 200 bytes
 
 .. php:method:: getCommand(  )
 
@@ -30,10 +32,10 @@ BeanstalkCommandStatsTube Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
-    :returns: *BeanstalkStats*
-    :throws: *BeanstalkException* When the job does not exist
-    :throws: *BeanstalkException* When any other error occurs
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
+    :returns: *\Beanstalk\Stats*
+    :throws: *\Beanstalk\Exception* When the job does not exist
+    :throws: *\Beanstalk\Exception* When any other error occurs
 
 .. php:method:: returnsData(  )
 

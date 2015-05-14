@@ -1,14 +1,16 @@
-BeanstalkStats Class Ref
-========================
+Beanstalk\\Stats Class Ref
+==========================
 
-.. php:class:: BeanstalkStats
+.. php:namespace:: Beanstalk
+
+.. php:class:: Stats
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkStats::__construct` -- Constructor
-    * :php:meth:`BeanstalkStats::getStat` -- Get the value of a given stat
-    * :php:meth:`BeanstalkStats::getStats` -- Get all the stats as an array
-    * :php:meth:`BeanstalkStats::setStat` -- Set a stat to a given value
+    * :php:meth:`Stats::__construct` -- Constructor
+    * :php:meth:`Stats::getStat` -- Get the value of a given stat
+    * :php:meth:`Stats::getStats` -- Get all the stats as an array
+    * :php:meth:`Stats::setStat` -- Set a stat to a given value
 
 .. php:method:: __construct( [ $data = null ] )
 

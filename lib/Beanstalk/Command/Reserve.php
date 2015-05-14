@@ -1,6 +1,12 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+namespace Beanstalk\Command;
+
+use Beanstalk\Command;
+use Beanstalk\Connection;
+use Beanstalk\Exception;
+use Beanstalk\Job;
 
 /**
  * Reserve command
@@ -19,10 +25,10 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandReserve extends BeanstalkCommand
+class Reserve extends Command
 {
 
-    protected $_timeout = null;
+    protected $timeout = null;
 
     /**
      * Constructor
@@ -31,7 +37,7 @@ class BeanstalkCommandReserve extends BeanstalkCommand
      */
     public function __construct($timeout = null)
     {
-        $this->_timeout = $timeout;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -41,13 +47,10 @@ class BeanstalkCommandReserve extends BeanstalkCommand
      */
     public function getCommand()
     {
-        if ($this->_timeout === null)
-        {
+        if ($this->timeout === null) {
             return 'reserve';
-        }
-        else
-        {
-            return sprintf('reserve-with-timeout %d', $this->_timeout);
+        } else {
+            return sprintf('reserve-with-timeout %d', $this->timeout);
         }
     }
 
@@ -64,37 +67,34 @@ class BeanstalkCommandReserve extends BeanstalkCommand
     /**
      * Parse the response for success or failure.
      *
-     * @param string $response Response line, i.e, first line in response
-     * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When trying to reserve another job and the TTR of the current job ends soon
-     * @throws BeanstalkException When the wait timeout exceeded before a job became available
-     * @throws BeanstalkException When any other error occurs
-     * @return BeanstalkJob
+     * @param  string                $response Response line, i.e, first line in response
+     * @param  string                $data     Data recieved with reponse, if any, else null
+     * @param  \Beanstalk\Connection $conn     BeanstalkConnection use to send the command
+     * @throws \Beanstalk\Exception  When trying to reserve another job and the TTR of the current job ends soon
+     * @throws \Beanstalk\Exception  When the wait timeout exceeded before a job became available
+     * @throws \Beanstalk\Exception  When any other error occurs
+     * @return \Beanstalk\Job
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
-		if (preg_match('/^RESERVED (\d+) (\d+)$/', $response, $matches))
-        {
-            return new BeanstalkJob($conn, $matches[1], $data);            
+        if (preg_match('/^RESERVED (\d+) (\d+)$/', $response, $matches)) {
+            return new Job($conn, $matches[1], $data);
         }
 
-        if ($response === 'DEADLINE_SOON')
-        {
-            throw new BeanstalkException(
+        if ($response === 'DEADLINE_SOON') {
+            throw new Exception(
                 'Reserved job TTR ends soon. Delete or release the job before the server automatically releases it.',
-                BeanstalkException::DEADLINE_SOON
+                Exception::DEADLINE_SOON
             );
         }
 
-        if ($response === 'TIMED_OUT')
-        {
-            throw new BeanstalkException(
-                'The wait timeout exceeded before a job became available', BeanstalkException::TIMED_OUT
+        if ($response === 'TIMED_OUT') {
+            throw new Exception(
+                'The wait timeout exceeded before a job became available',
+                Exception::TIMED_OUT
             );
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+        throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
-
 }

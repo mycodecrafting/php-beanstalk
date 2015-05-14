@@ -1,13 +1,14 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+namespace Beanstalk;
 
 /**
  * Beanstalk Exceptions
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkException extends Exception
+class Exception extends \Exception
 {
 
     /**
@@ -105,25 +106,70 @@ class BeanstalkException extends Exception
      */
     public function getCodeAsString()
     {
-        switch ($this->getCode())
-        {
-            case self::BURIED:              return 'Buried';
-            case self::NOT_FOUND:           return 'Not Found';
-            case self::EXPECTED_CRLF:       return 'Expected CRLF';
-            case self::JOB_TOO_BIG:         return 'Job Too Big';
-            case self::DEADLINE_SOON:       return 'Deadline Soon';
-            case self::TIMED_OUT:           return 'Timed Out';
-            case self::TUBE_NAME_TOO_LONG:  return 'Tube Name Too Long';
-            case self::NOT_IGNORED:         return 'Not Ignored';
-            case self::OUT_OF_MEMORY:       return 'Out of Memory';
-            case self::INTERNAL_ERROR:      return 'Internal Error';
-            case self::BAD_FORMAT:          return 'Bad Format';
-            case self::UNKNOWN_COMMAND:     return 'Unknown Command';
-            case self::SERVER_OFFLINE:      return 'Server Offline';
-            case self::SERVER_READ:         return 'Server Read Error';
-            case self::SERVER_WRITE:        return 'Server Write Error';
-            default:                        return 'Unknown';
+        switch ($this->getCode()) {
+            case self::BURIED:
+                return 'Buried';
+                break;
+
+            case self::NOT_FOUND:
+                return 'Not Found';
+                break;
+
+            case self::EXPECTED_CRLF:
+                return 'Expected CRLF';
+                break;
+
+            case self::JOB_TOO_BIG:
+                return 'Job Too Big';
+                break;
+
+            case self::DEADLINE_SOON:
+                return 'Deadline Soon';
+                break;
+
+            case self::TIMED_OUT:
+                return 'Timed Out';
+                break;
+
+            case self::TUBE_NAME_TOO_LONG:
+                return 'Tube Name Too Long';
+                break;
+
+            case self::NOT_IGNORED:
+                return 'Not Ignored';
+                break;
+
+            case self::OUT_OF_MEMORY:
+                return 'Out of Memory';
+                break;
+
+            case self::INTERNAL_ERROR:
+                return 'Internal Error';
+                break;
+
+            case self::BAD_FORMAT:
+                return 'Bad Format';
+                break;
+
+            case self::UNKNOWN_COMMAND:
+                return 'Unknown Command';
+                break;
+
+            case self::SERVER_OFFLINE:
+                return 'Server Offline';
+                break;
+
+            case self::SERVER_READ:
+                return 'Server Read Error';
+                break;
+
+            case self::SERVER_WRITE:
+                return 'Server Write Error';
+                break;
+
+            default:
+                return 'Unknown';
+                break;
         }
     }
-
 }

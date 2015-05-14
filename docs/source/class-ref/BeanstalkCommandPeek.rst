@@ -1,9 +1,11 @@
-BeanstalkCommandPeek Class Ref
-==============================
+Beanstalk\\Command\\Peek Class Ref
+==================================
 
-.. php:class:: BeanstalkCommandPeek
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: Peek
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: The peek commands let the client inspect a job in the system
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
@@ -16,10 +18,10 @@ BeanstalkCommandPeek Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandPeek::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandPeek::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandPeek::parseResponse` -- Parse the response for success or failure.
-    * :php:meth:`BeanstalkCommandPeek::returnsData` -- Does the command return data?
+    * :php:meth:`Peek::__construct` -- Constructor
+    * :php:meth:`Peek::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`Peek::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`Peek::returnsData` -- Does the command return data?
 
 .. php:method:: __construct( $what )
 
@@ -36,10 +38,10 @@ BeanstalkCommandPeek Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
-    :returns: *BeanstalkJob*
-    :throws: *BeanstalkException* When the job doesn't exist or there are no jobs in the requested state
-    :throws: *BeanstalkException* When any other error occurs
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
+    :returns: *\Beanstalk\Job*
+    :throws: *\Beanstalk\Exception* When the job doesn't exist or there are no jobs in the requested state
+    :throws: *\Beanstalk\Exception* When any other error occurs
 
 .. php:method:: returnsData(  )
 

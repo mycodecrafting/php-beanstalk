@@ -1,64 +1,57 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
-namespace UnitTests\BeanstalkTests\CommandTests\UseTest;
+namespace UnitTests\BeanstalkTests\CommandTests\UseTubeTest;
 
-use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandUse;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/Use.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
+use PHPUnit_Framework_TestCase;
+use Beanstalk\Command\UseTube;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
 
     public function testGetCommand()
     {
-        $command = new BeanstalkCommandUse('tube-name');
+        $command = new UseTube('tube-name');
         $this->assertEquals('use tube-name', $command->getCommand());
 
-        $command = new BeanstalkCommandUse('tube3r');
+        $command = new UseTube('tube3r');
         $this->assertEquals('use tube3r', $command->getCommand());
     }
 
     public function testCannotSetTubeNameLongerThan200Bytes()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::TUBE_NAME_TOO_LONG);
+        $this->setExpectedException('\Beanstalk\Exception', '', \Beanstalk\Exception::TUBE_NAME_TOO_LONG);
 
         $tube = 'a-long-name-for-a-tube-that-is-completely-ridiculous-and-probably-would-not-happen-in-reality-but-we-have-to-test-for-it-anyways-just-in-case-someone-gets-the-crazy-idea-to-create-a-tube-name-like-this';
-        $command = new BeanstalkCommandUse($tube);
+        $command = new UseTube($tube);
     }
 
     public function testHasNoData()
     {
-        $command = new BeanstalkCommandUse('tube');
+        $command = new UseTube('tube');
         $this->assertFalse($command->getData());
     }
 
     public function testReturnsNoData()
     {
-        $command = new BeanstalkCommandUse('tube');
+        $command = new UseTube('tube');
         $this->assertFalse($command->returnsData());
     }
 
     public function testParseResponseOnSuccess()
     {
-        $command = new BeanstalkCommandUse('tube');
+        $command = new UseTube('tube');
         $this->assertEquals('tube', $command->parseResponse('USING tube'));
 
-        $command = new BeanstalkCommandUse('tube2-name');
+        $command = new UseTube('tube2-name');
         $this->assertEquals('tube2-name', $command->parseResponse('USING tube2-name'));
     }
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\Beanstalk\Exception', '', \Beanstalk\Exception::UNKNOWN);
 
-        $command = new BeanstalkCommandUse('tube2-name');
+        $command = new UseTube('tube2-name');
         $command->parseResponse('This is wack');
     }
 

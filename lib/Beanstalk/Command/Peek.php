@@ -1,6 +1,12 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+namespace Beanstalk\Command;
+
+use Beanstalk\Command;
+use Beanstalk\Connection;
+use Beanstalk\Exception;
+use Beanstalk\Job;
 
 /**
  * The peek commands let the client inspect a job in the system
@@ -13,10 +19,10 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandPeek extends BeanstalkCommand
+class Peek extends Command
 {
 
-    protected $_what;
+    protected $what;
 
     /**
      * Constructor
@@ -25,7 +31,7 @@ class BeanstalkCommandPeek extends BeanstalkCommand
      */
     public function __construct($what)
     {
-        $this->_what = $what;
+        $this->what = $what;
     }
 
     /**
@@ -35,16 +41,15 @@ class BeanstalkCommandPeek extends BeanstalkCommand
      */
     public function getCommand()
     {
-        switch ($this->_what)
-        {
+        switch ($this->what) {
             case 'ready':
             case 'delayed':
             case 'buried':
-                return sprintf('peek-%s', $this->_what);
+                return sprintf('peek-%s', $this->what);
                 break;
 
             default:
-                return sprintf('peek %d', $this->_what);
+                return sprintf('peek %d', $this->what);
                 break;
         }
     }
@@ -62,25 +67,26 @@ class BeanstalkCommandPeek extends BeanstalkCommand
     /**
      * Parse the response for success or failure.
      *
-     * @param string $response Response line, i.e, first line in response
-     * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When the job doesn't exist or there are no jobs in the requested state
-     * @throws BeanstalkException When any other error occurs
-     * @return BeanstalkJob
+     * @param  string                $response Response line, i.e, first line in response
+     * @param  string                $data     Data recieved with reponse, if any, else null
+     * @param  \Beanstalk\Connection $conn     BeanstalkConnection use to send the command
+     * @throws \Beanstalk\Exception  When the job doesn't exist or there are no jobs in the requested state
+     * @throws \Beanstalk\Exception  When any other error occurs
+     * @return \Beanstalk\Job
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
-		if (preg_match('/^FOUND (\d+) (\d+)$/', $response, $matches))
-        {
-            return new BeanstalkJob($conn, $matches[1], $data);
+        if (preg_match('/^FOUND (\d+) (\d+)$/', $response, $matches)) {
+            return new Job($conn, $matches[1], $data);
         }
 
-        if ($response === 'NOT_FOUND')
-        {
-            throw new BeanstalkException('The requested job doesn\'t exist or there are no jobs in the requested state.', BeanstalkException::NOT_FOUND);
+        if ($response === 'NOT_FOUND') {
+            throw new Exception(
+                'The requested job doesn\'t exist or there are no jobs in the requested state.',
+                Exception::NOT_FOUND
+            );
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+        throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
 }

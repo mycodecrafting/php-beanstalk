@@ -1,31 +1,35 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+namespace Beanstalk;
 
 /**
  * A Beanstalkd job
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkJob
+class Job
 {
+
+    protected $conn;
+    protected $id;
+    protected $message;
 
     /**
      * Constructor
      *
-     * @param BeanstalkConnection $conn BeanstalkConnection for the job
-     * @param integer $id Job id
-     * @param string $message Job body. If the body is JSON, it will be converted to an object
+     * @param \Beanstalk\Connection $conn    Connection for the job
+     * @param integer               $id      Job id
+     * @param string                $message Job body. If the body is JSON, it will be converted to an object
      */
-    public function __construct(BeanstalkConnection $conn, $id, $message)
+    public function __construct(Connection $conn, $id, $message)
     {
-        $this->_conn = $conn;
-        $this->_id = $id;
-        if (($msg = json_decode($message)) === null)
-        {
+        $this->conn = $conn;
+        $this->id = $id;
+        if (($msg = json_decode($message)) === null) {
             $msg = $message;
         }
-        $this->_message = $msg;
+        $this->message = $msg;
     }
 
     /**
@@ -35,7 +39,7 @@ class BeanstalkJob
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
 
     /**
@@ -45,7 +49,7 @@ class BeanstalkJob
      */
     public function getMessage()
     {
-        return $this->_message;
+        return $this->message;
     }
 
     /**
@@ -55,7 +59,7 @@ class BeanstalkJob
      */
     public function getConnection()
     {
-        return $this->_conn;
+        return $this->conn;
     }
 
     /**
@@ -96,8 +100,9 @@ class BeanstalkJob
      * its state as "ready") to be run by any client. It is normally used when the job
      * fails because of a transitory error.
      *
-     * @param integer $delay Number of seconds to wait before putting the job in the ready queue. The job will be in the "delayed" state during this time
-     * @param integer $priority A new priority to assign to the job
+     * @param  integer            $delay    Number of seconds to wait before putting the job in the ready queue. 
+     *                                      The job will be in the "delayed" state during this time
+     * @param  integer            $priority A new priority to assign to the job
      * @throws BeanstalkException
      * @return boolean
      */
@@ -133,5 +138,4 @@ class BeanstalkJob
     {
         return $this->getConnection()->statsJob($this->getId());
     }
-
 }

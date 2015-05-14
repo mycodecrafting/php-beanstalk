@@ -1,9 +1,11 @@
-BeanstalkCommandStatsJob Class Ref
-==================================
+Beanstalk\\Command\\StatsJob Class Ref
+======================================
 
-.. php:class:: BeanstalkCommandStatsJob
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: StatsJob
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: The stats-job command gives statistical information about the specified job if it exists
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
@@ -26,10 +28,10 @@ BeanstalkCommandStatsJob Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandStatsJob::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandStatsJob::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandStatsJob::parseResponse` -- Parse the response for success or failure.
-    * :php:meth:`BeanstalkCommandStatsJob::returnsData` -- Does the command return data?
+    * :php:meth:`StatsJob::__construct` -- Constructor
+    * :php:meth:`StatsJob::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`StatsJob::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`StatsJob::returnsData` -- Does the command return data?
 
 .. php:method:: __construct( $id )
 
@@ -46,10 +48,10 @@ BeanstalkCommandStatsJob Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
-    :returns: *BeanstalkStats*
-    :throws: *BeanstalkException* When the job does not exist
-    :throws: *BeanstalkException* When any other error occurs
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
+    :returns: *\Beanstalk\Stats*
+    :throws: *\Beanstalk\Exception* When the job does not exist
+    :throws: *\Beanstalk\Exception* When any other error occurs
 
 .. php:method:: returnsData(  )
 

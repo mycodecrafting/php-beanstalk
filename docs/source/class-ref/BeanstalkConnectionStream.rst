@@ -1,16 +1,18 @@
-BeanstalkConnectionStream Interface Ref
-=======================================
+Beanstalk\\Connection\\Stream Interface Ref
+===========================================
 
-.. php:interface:: BeanstalkConnectionStream
+.. php:namespace:: Beanstalk\Connection
+
+.. php:interface:: Stream
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkConnectionStream::close` -- Close the stream connection
-    * :php:meth:`BeanstalkConnectionStream::isTimedOut` -- Has the connection timed out or otherwise gone away?
-    * :php:meth:`BeanstalkConnectionStream::open` -- Open the stream
-    * :php:meth:`BeanstalkConnectionStream::read` -- Read the next $bytes bytes from the stream
-    * :php:meth:`BeanstalkConnectionStream::readLine` -- Read the next line from the stream
-    * :php:meth:`BeanstalkConnectionStream::write` -- Write data to the stream
+    * :php:meth:`Stream::close` -- Close the stream connection
+    * :php:meth:`Stream::isTimedOut` -- Has the connection timed out or otherwise gone away?
+    * :php:meth:`Stream::open` -- Open the stream
+    * :php:meth:`Stream::read` -- Read the next $bytes bytes from the stream
+    * :php:meth:`Stream::readLine` -- Read the next line from the stream
+    * :php:meth:`Stream::write` -- Write data to the stream
 
 .. php:method:: close(  )
 

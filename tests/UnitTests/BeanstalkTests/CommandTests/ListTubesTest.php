@@ -3,22 +3,15 @@
 
 namespace UnitTests\BeanstalkTests\CommandTests\ListTubesTest;
 
-use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandListTubes;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/ListTubes.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
+use PHPUnit_Framework_TestCase;
+use Beanstalk\Command\ListTubes;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
 
     protected function setUp()
     {
-        $this->command = new BeanstalkCommandListTubes();
+        $this->command = new ListTubes();
     }
 
     public function testGetCommand()
@@ -60,7 +53,7 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testParseResponseOnOtherErrors()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\Beanstalk\Exception', '', \Beanstalk\Exception::UNKNOWN);
 
         $this->command->parseResponse('This is wack');
     }
