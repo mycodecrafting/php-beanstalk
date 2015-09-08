@@ -48,7 +48,7 @@ As a Consumer
         }
     }
 
-Built in JSON support
+Built-in JSON support
 *********************
 
 Objects are automatically converted

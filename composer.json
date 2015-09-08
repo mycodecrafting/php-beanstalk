@@ -1,8 +1,8 @@
 {
     "name": "smarterwebdev/php-beanstalk",
     "type": "library",
-    "description": "PHP 5.3+ beanstalkd client",
-    "keywords": ["beanstalkd"],
+    "description": "PHP 5.5+ beanstalkd client",
+    "keywords": [ "beanstalkd", "queues", "message queue", "queueing" ],
     "license": "MIT",
     "authors": [
         {
