@@ -1,6 +1,11 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+namespace Beanstalk\Command;
+
+use Beanstalk\Command;
+use Beanstalk\Connection;
+use Beanstalk\Exception;
 
 /**
  * Touch command
@@ -13,10 +18,10 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandTouch extends BeanstalkCommand
+class Touch extends Command
 {
 
-    protected $_id;
+    protected $id;
 
     /**
      * Constructor
@@ -25,7 +30,7 @@ class BeanstalkCommandTouch extends BeanstalkCommand
      */
     public function __construct($id)
     {
-        $this->_id = $id;
+        $this->id = $id;
     }
 
     /**
@@ -35,32 +40,29 @@ class BeanstalkCommandTouch extends BeanstalkCommand
      */
     public function getCommand()
     {
-        return sprintf('touch %d', $this->_id);
+        return sprintf('touch %d', $this->id);
     }
 
     /**
      * Parse the response for success or failure.
      *
-     * @param string $response Response line, i.e, first line in response
-     * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When the job cannot be found or has already timed out
-     * @throws BeanstalkException When any other error occurs
-     * @return boolean True if command was successful
+     * @param  string                $response Response line, i.e, first line in response
+     * @param  string                $data     Data recieved with reponse, if any, else null
+     * @param  \Beanstalk\Connection $conn     BeanstalkConnection use to send the command
+     * @throws \Beanstalk\Exception  When the job cannot be found or has already timed out
+     * @throws \Beanstalk\Exception  When any other error occurs
+     * @return boolean               True if command was successful
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
-        if ($response === 'TOUCHED')
-        {
+        if ($response === 'TOUCHED') {
             return true;
         }
 
-        if ($response === 'NOT_FOUND')
-        {
-		    throw new BeanstalkException('The job does not exist or is not reserved by the client.', BeanstalkException::NOT_FOUND);
+        if ($response === 'NOT_FOUND') {
+            throw new Exception('The job does not exist or is not reserved by the client.', Exception::NOT_FOUND);
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+        throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
-
 }

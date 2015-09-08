@@ -1,6 +1,12 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+namespace Beanstalk\Command;
+
+use Beanstalk\Command;
+use Beanstalk\Connection;
+use Beanstalk\Exception;
+use Beanstalk\Stats as BeanstalkStats;
 
 /**
  * The stats-job command gives statistical information about the specified job if it exists
@@ -23,10 +29,10 @@
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class BeanstalkCommandStatsJob extends BeanstalkCommand
+class StatsJob extends Command
 {
 
-    protected $_id;
+    protected $id;
 
     /**
      * Constructor
@@ -35,7 +41,7 @@ class BeanstalkCommandStatsJob extends BeanstalkCommand
      */
     public function __construct($id)
     {
-        $this->_id = $id;
+        $this->id = $id;
     }
 
     /**
@@ -45,7 +51,7 @@ class BeanstalkCommandStatsJob extends BeanstalkCommand
      */
     public function getCommand()
     {
-        return sprintf('stats-job %d', $this->_id);
+        return sprintf('stats-job %d', $this->id);
     }
 
     /**
@@ -61,26 +67,23 @@ class BeanstalkCommandStatsJob extends BeanstalkCommand
     /**
      * Parse the response for success or failure.
      *
-     * @param string $response Response line, i.e, first line in response
-     * @param string $data Data recieved with reponse, if any, else null
-     * @param BeanstalkConnection $conn BeanstalkConnection use to send the command
-     * @throws BeanstalkException When the job does not exist
-     * @throws BeanstalkException When any other error occurs
-     * @return BeanstalkStats
+     * @param  string                $response Response line, i.e, first line in response
+     * @param  string                $data     Data recieved with reponse, if any, else null
+     * @param  \Beanstalk\Connection $conn     BeanstalkConnection use to send the command
+     * @throws \Beanstalk\Exception  When the job does not exist
+     * @throws \Beanstalk\Exception  When any other error occurs
+     * @return \Beanstalk\Stats
      */
-    public function parseResponse($response, $data = null, BeanstalkConnection $conn = null)
+    public function parseResponse($response, $data = null, Connection $conn = null)
     {
-		if (preg_match('/^OK (\d+)$/', $response, $matches))
-        {
+        if (preg_match('/^OK (\d+)$/', $response, $matches)) {
             return new BeanstalkStats($data);
         }
 
-        if ($response === 'NOT_FOUND')
-        {
-            throw new BeanstalkException('The job does not exist.', BeanstalkException::NOT_FOUND);
+        if ($response === 'NOT_FOUND') {
+            throw new Exception('The job does not exist.', Exception::NOT_FOUND);
         }
 
-	    throw new BeanstalkException('An unknown error has occured.', BeanstalkException::UNKNOWN);
+        throw new Exception('An unknown error has occured.', Exception::UNKNOWN);
     }
-
 }

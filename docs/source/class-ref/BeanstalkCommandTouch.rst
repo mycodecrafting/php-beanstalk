@@ -1,9 +1,11 @@
-BeanstalkCommandTouch Class Ref
-===============================
+Beanstalk\\Command\\Touch Class Ref
+===================================
 
-.. php:class:: BeanstalkCommandTouch
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: Touch
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: Touch command
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
@@ -16,9 +18,9 @@ BeanstalkCommandTouch Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandTouch::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandTouch::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandTouch::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`Touch::__construct` -- Constructor
+    * :php:meth:`Touch::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`Touch::parseResponse` -- Parse the response for success or failure.
 
 .. php:method:: __construct( $id )
 
@@ -35,9 +37,9 @@ BeanstalkCommandTouch Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
     :returns: *boolean* True if command was successful
-    :throws: *BeanstalkException* When the job cannot be found or has already timed out
-    :throws: *BeanstalkException* When any other error occurs
+    :throws: *\Beanstalk\Exception* When the job cannot be found or has already timed out
+    :throws: *\Beanstalk\Exception* When any other error occurs
 
 

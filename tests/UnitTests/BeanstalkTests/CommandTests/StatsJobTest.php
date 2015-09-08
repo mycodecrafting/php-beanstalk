@@ -3,66 +3,58 @@
 
 namespace UnitTests\BeanstalkTests\CommandTests\StatsJobTest;
 
-use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommandStatsJob;
-use \BeanstalkException;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Command/StatsJob.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Exception.php';
-require_once dirname(__FILE__) . '/../../../../lib/Beanstalk/Stats.php';
+use PHPUnit_Framework_TestCase;
+use Beanstalk\Command\StatsJob;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
 
     public function testGetCommand()
     {
-        $command = new BeanstalkCommandStatsJob(123);
+        $command = new StatsJob(123);
         $this->assertEquals('stats-job 123', $command->getCommand());
 
-        $command = new BeanstalkCommandStatsJob(543);
+        $command = new StatsJob(543);
         $this->assertEquals('stats-job 543', $command->getCommand());
     }
 
     public function testGetCommandForcesIdToInteger()
     {
-        $command = new BeanstalkCommandStatsJob('hello');
+        $command = new StatsJob('hello');
         $this->assertEquals('stats-job 0', $command->getCommand());
     }
 
     public function testHasNoData()
     {
-        $command = new BeanstalkCommandStatsJob(123);
+        $command = new StatsJob(123);
         $this->assertFalse($command->getData());
     }
 
     public function testReturnsData()
     {
-        $command = new BeanstalkCommandStatsJob(123);
+        $command = new StatsJob(123);
         $this->assertTrue($command->returnsData());
     }
 
     public function testParseResponseOnSuccessReturnsBeanstalkStats()
     {
-        $command = new BeanstalkCommandStatsJob(123);
-        $this->assertInstanceOf('BeanstalkStats', $command->parseResponse('OK 256'));
+        $command = new StatsJob(123);
+        $this->assertInstanceOf('\Beanstalk\Stats', $command->parseResponse('OK 256'));
     }
 
     public function testParseResponseOnNotFound()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::NOT_FOUND);
+        $this->setExpectedException('\Beanstalk\Exception', '', \Beanstalk\Exception::NOT_FOUND);
 
-        $command = new BeanstalkCommandStatsJob(123);
+        $command = new StatsJob(123);
         $command->parseResponse('NOT_FOUND');
     }
 
     public function testParseResponseOnOtherError()
     {
-        $this->setExpectedException('BeanstalkException', '', BeanstalkException::UNKNOWN);
+        $this->setExpectedException('\Beanstalk\Exception', '', \Beanstalk\Exception::UNKNOWN);
 
-        $command = new BeanstalkCommandStatsJob(123);
+        $command = new StatsJob(123);
         $command->parseResponse('This is wack');
     }
 

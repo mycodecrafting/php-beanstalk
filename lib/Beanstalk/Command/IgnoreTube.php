@@ -8,52 +8,56 @@ use Beanstalk\Connection;
 use Beanstalk\Exception;
 
 /**
- * Kick command
+ * Ignore command
  *
- * The kick command applies only to the currently used tube. It moves jobs into
- * the ready queue. If there are any buried jobs, it will only kick buried jobs.
- * Otherwise it will kick delayed jobs
+ * The "ignore" command is for consumers. It removes the named tube from the
+ * watch list for the current connection.
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class Kick extends Command
+class IgnoreTube extends Command
 {
 
-    protected $bound;
+    protected $tube;
 
     /**
      * Constructor
      *
-     * @param integer $bound Upper bound on the number of jobs to kick. The server will kick no more than $bound jobs.
+     * @param string $tube Tube to remove from the watch list
      */
-    public function __construct($bound)
+    public function __construct($tube)
     {
-        $this->bound = $bound;
+        $this->tube = $tube;
     }
 
     /**
-     * Get the delete command to send to the beanstalkd server
+     * Get the command to send to the beanstalkd server
      *
      * @return string
      */
     public function getCommand()
     {
-        return sprintf('kick %d', $this->bound);
+        return sprintf('ignore %s', $this->tube);
     }
 
     /**
      * Parse the response for success or failure.
      *
      * @param  string                $response Response line, i.e, first line in response
-     * @param  string                $data     Data recieved with reponse, if any, else null
+     * @param  string                $data     Data received with reponse, if any, else null
      * @param  \Beanstalk\Connection $conn     BeanstalkConnection use to send the command
+     * @throws \Beanstalk\Exception  When the requested tube cannot be ignored
      * @throws \Beanstalk\Exception  When any error occurs
-     * @return integer               The number of jobs actually kicked
+     * @return integer               The number of tubes being watched
      */
     public function parseResponse($response, $data = null, Connection $conn = null)
     {
-        if (preg_match('/^KICKED (.+)$/', $response, $matches)) {
+        if (preg_match('/^WATCHING (.+)$/', $response, $matches)) {
             return intval($matches[1]);
+        }
+
+        if ($response === 'NOT_IGNORED') {
+            throw new Exception('Cannot ignore the only tube in the watch list', Exception::NOT_IGNORED);
         }
 
         throw new Exception('An unknown error has occured.', Exception::UNKNOWN);

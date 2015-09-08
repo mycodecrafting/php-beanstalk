@@ -8,23 +8,23 @@ use Beanstalk\Connection;
 use Beanstalk\Exception;
 
 /**
- * Delete command
+ * Kick-job command
  *
- * The delete command removes a job from the server entirely. It is normally used
- * by the client when the job has successfully run to completion. A client can
- * delete jobs that it has reserved, ready jobs, and jobs that are buried.
+ * The kick-job command is a variant of kick that operates with a single job identified by its
+ * job id. If the given job id exists and is in a buried or delayed state, it will be moved to
+ * the ready queue of the the same tube where it currently belongs.
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class Delete extends Command
+class Kick extends Command
 {
 
-    protected $id = null;
+    protected $id;
 
     /**
      * Constructor
      *
-     * @param integer $id The job id to delete
+     * @param integer $id The job id to kick.
      */
     public function __construct($id)
     {
@@ -32,13 +32,13 @@ class Delete extends Command
     }
 
     /**
-     * Get the delete command to send to the beanstalkd server
+     * Get the command to send to the beanstalkd server
      *
      * @return string
      */
     public function getCommand()
     {
-        return sprintf('delete %d', $this->id);
+        return sprintf('kick-job %d', $this->id);
     }
 
     /**
@@ -47,22 +47,18 @@ class Delete extends Command
      * @param  string                $response Response line, i.e, first line in response
      * @param  string                $data     Data recieved with reponse, if any, else null
      * @param  \Beanstalk\Connection $conn     BeanstalkConnection use to send the command
-     * @throws \Beanstalk\Exception  When the job cannot be found or has already timed out
+     * @throws \Beanstalk\Exception  When the job cannot be found or is not in a kickable state.
      * @throws \Beanstalk\Exception  When any other error occurs
      * @return boolean               True if command was successful
      */
     public function parseResponse($response, $data = null, Connection $conn = null)
     {
-        if ($response === 'DELETED') {
+        if ($response === 'KICKED') {
             return true;
         }
 
         if ($response === 'NOT_FOUND') {
-            throw new Exception(
-                'The job does not exist or is not either reserved by the client, ready, or buried. ' .
-                'This could happen if the job timed out before the client sent the delete command.',
-                Exception::NOT_FOUND
-            );
+            throw new Exception('The job does not exist or is not in a kickable state..', Exception::NOT_FOUND);
         }
 
         throw new Exception('An unknown error has occured.', Exception::UNKNOWN);

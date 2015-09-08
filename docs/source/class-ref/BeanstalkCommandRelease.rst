@@ -1,9 +1,11 @@
-BeanstalkCommandRelease Class Ref
-=================================
+Beanstalk\\Command\\Release Class Ref
+=====================================
 
-.. php:class:: BeanstalkCommandRelease
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: Release
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: Release command
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
@@ -14,16 +16,16 @@ BeanstalkCommandRelease Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandRelease::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandRelease::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandRelease::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`Release::__construct` -- Constructor
+    * :php:meth:`Release::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`Release::parseResponse` -- Parse the response for success or failure.
 
 .. php:method:: __construct( $id , $priority , $delay )
 
     :Description: Constructor
     :param integer $id: The job id to release
     :param integer $priority: A new priority to assign to the job
-    :param integer $delay: Number of seconds to wait before putting the job in the ready queue. The job will be in the "delayed" state during this time
+    :param integer $delay: Number of seconds to wait before putting the job in the ready queue.
 
 .. php:method:: getCommand(  )
 
@@ -35,10 +37,10 @@ BeanstalkCommandRelease Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
     :returns: *boolean* True if command was successful
-    :throws: *BeanstalkException* When the server runs out of memory
-    :throws: *BeanstalkException* When the job cannot be found or has already timed out
-    :throws: *BeanstalkException* When any other error occurs
+    :throws: *\Beanstalk\Exception* When the server runs out of memory
+    :throws: *\Beanstalk\Exception* When the job cannot be found or has already timed out
+    :throws: *\Beanstalk\Exception* When any other error occurs
 
 

@@ -1,18 +1,20 @@
-BeanstalkCommandStats Class Ref
-===============================
+Beanstalk\\Command\\Stats Class Ref
+===================================
 
-.. php:class:: BeanstalkCommandStats
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: Stats
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: The stats command gives statistical information about the system as a whole
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandStats::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandStats::parseResponse` -- Parse the response for success or failure.
-    * :php:meth:`BeanstalkCommandStats::returnsData` -- Does the command return data?
+    * :php:meth:`Stats::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`Stats::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`Stats::returnsData` -- Does the command return data?
 
 .. php:method:: getCommand(  )
 
@@ -24,9 +26,9 @@ BeanstalkCommandStats Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
-    :returns: *BeanstalkStats*
-    :throws: *BeanstalkException* When any error occurs
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
+    :returns: *\Beanstalk\Stats*
+    :throws: *\Beanstalk\Exception* When any error occurs
 
 .. php:method:: returnsData(  )
 

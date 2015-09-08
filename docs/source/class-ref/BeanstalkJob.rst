@@ -1,7 +1,9 @@
-BeanstalkJob Class Ref
-======================
+Beanstalk\\Job Class Ref
+========================
 
-.. php:class:: BeanstalkJob
+.. php:namespace:: Beanstalk
+
+.. php:class:: Job
 
     :Description: A Beanstalkd job
     :Author: Joshua Dechant <jdechant@shapeup.com>
@@ -9,20 +11,20 @@ BeanstalkJob Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkJob::__construct` -- Constructor
-    * :php:meth:`BeanstalkJob::bury` -- Bury the job
-    * :php:meth:`BeanstalkJob::delete` -- Delete the job
-    * :php:meth:`BeanstalkJob::getConnection` -- Get the beanstalkd connection for the job
-    * :php:meth:`BeanstalkJob::getId` -- Get the job id
-    * :php:meth:`BeanstalkJob::getMessage` -- Get the job body/message
-    * :php:meth:`BeanstalkJob::release` -- Release the job
-    * :php:meth:`BeanstalkJob::stats` -- Get stats on the job
-    * :php:meth:`BeanstalkJob::touch` -- Touch the job
+    * :php:meth:`Job::__construct` -- Constructor
+    * :php:meth:`Job::bury` -- Bury the job
+    * :php:meth:`Job::delete` -- Delete the job
+    * :php:meth:`Job::getConnection` -- Get the beanstalkd connection for the job
+    * :php:meth:`Job::getId` -- Get the job id
+    * :php:meth:`Job::getMessage` -- Get the job body/message
+    * :php:meth:`Job::release` -- Release the job
+    * :php:meth:`Job::stats` -- Get stats on the job
+    * :php:meth:`Job::touch` -- Touch the job
 
 .. php:method:: __construct( $conn , $id , $message )
 
     :Description: Constructor
-    :param BeanstalkConnection $conn: BeanstalkConnection for the job
+    :param Beanstalk\Connection $conn: Connection for the job
     :param integer $id: Job id
     :param string $message: Job body. If the body is JSON, it will be converted to an object
 
@@ -62,7 +64,7 @@ BeanstalkJob Class Ref
 .. php:method:: release( [ $delay = 10 , $priority = 5 ] )
 
     :Description: Release the job
-    :param integer $delay: Number of seconds to wait before putting the job in the ready queue. The job will be in the "delayed" state during this time
+    :param integer $delay: Number of seconds to wait before putting the job in the ready queue.
     :param integer $priority: A new priority to assign to the job
     :returns: *boolean*
     :throws: *BeanstalkException*

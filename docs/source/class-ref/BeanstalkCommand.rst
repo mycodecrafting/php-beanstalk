@@ -1,7 +1,9 @@
-BeanstalkCommand Class Ref
-==========================
+Beanstalk\\Command Class Ref
+============================
 
-.. php:class:: BeanstalkCommand
+.. php:namespace:: Beanstalk
+
+.. php:class:: Command
 
     :Description: Abstract beanstalk command.
     :Author: Joshua Dechant <jdechant@shapeup.com>
@@ -11,10 +13,10 @@ BeanstalkCommand Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommand::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommand::getData` -- Get data, if any, to send with the command.
-    * :php:meth:`BeanstalkCommand::parseResponse` -- Parse the response for success or failure.
-    * :php:meth:`BeanstalkCommand::returnsData` -- Does the command return data?
+    * :php:meth:`Command::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`Command::getData` -- Get data, if any, to send with the command.
+    * :php:meth:`Command::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`Command::returnsData` -- Does the command return data?
 
 .. php:method:: getCommand(  )
 
@@ -33,7 +35,7 @@ BeanstalkCommand Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
     :returns: *mixed* On success
     :throws: *BeanstalkException* On failure
 

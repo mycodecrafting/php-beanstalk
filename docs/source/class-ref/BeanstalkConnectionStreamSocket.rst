@@ -1,21 +1,23 @@
-BeanstalkConnectionStreamSocket Class Ref
-=========================================
+Beanstalk\\Connection\\Stream\\Socket Class Ref
+===============================================
 
-.. php:class:: BeanstalkConnectionStreamSocket
+.. php:namespace:: Beanstalk\Connection\Stream
 
-    :Implements: :php:interface:`BeanstalkConnectionStream`
+.. php:class:: Socket
+
+    :Implements: :php:interface:`Beanstalk\Connection\Stream`
     :Description: Connection stream using PHP native sockets
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkConnectionStreamSocket::close` -- Close the stream connection
-    * :php:meth:`BeanstalkConnectionStreamSocket::isTimedOut` -- Has the connection timed out or otherwise gone away?
-    * :php:meth:`BeanstalkConnectionStreamSocket::open` -- Open the stream
-    * :php:meth:`BeanstalkConnectionStreamSocket::read` -- Read the next $bytes bytes from the stream
-    * :php:meth:`BeanstalkConnectionStreamSocket::readLine` -- Read the next line from the stream
-    * :php:meth:`BeanstalkConnectionStreamSocket::write` -- Write data to the stream
+    * :php:meth:`Socket::close` -- Close the stream connection
+    * :php:meth:`Socket::isTimedOut` -- Has the connection timed out or otherwise gone away?
+    * :php:meth:`Socket::open` -- Open the stream
+    * :php:meth:`Socket::read` -- Read the next $bytes bytes from the stream
+    * :php:meth:`Socket::readLine` -- Read the next line from the stream
+    * :php:meth:`Socket::write` -- Write data to the stream
 
 .. php:method:: close(  )
 

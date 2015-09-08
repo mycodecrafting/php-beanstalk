@@ -1,11 +1,12 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+namespace Beanstalk;
 
-class BeanstalkStats
+class Stats
 {
 
-    protected $_stats = array();
+    protected $stats = array();
 
     /**
      * Constructor
@@ -14,11 +15,9 @@ class BeanstalkStats
      */
     public function __construct($data = null)
     {
-        if ($data !== null)
-        {
+        if ($data !== null) {
             preg_match_all('/^(.+):\s+(.+)$/m', $data, $matches, PREG_SET_ORDER);
-            foreach ($matches as $match)
-            {
+            foreach ($matches as $match) {
                 $this->setStat($match[1], trim($match[2]));
             }
         }
@@ -27,27 +26,26 @@ class BeanstalkStats
     /**
      * Set a stat to a given value
      *
-     * @param string $stat
-     * @param string $value
+     * @param  string $stat
+     * @param  string $value
      * @return void
      */
     public function setStat($stat, $value)
     {
-        $this->_stats[$stat] = $value;
+        $this->stats[$stat] = $value;
     }
 
     /**
      * Get the value of a given stat
      *
-     * @param string $stat Stat name to get the value of
-     * @return string Stat's value
+     * @param  string  $stat Stat name to get the value of
+     * @return string  Stat's value
      * @return boolean false when value not set
      */
     public function getStat($stat)
     {
-        if (isset($this->_stats[$stat]))
-        {
-            return $this->_stats[$stat];
+        if (isset($this->stats[$stat])) {
+            return $this->stats[$stat];
         }
 
         return false;
@@ -60,7 +58,6 @@ class BeanstalkStats
      */
     public function getStats()
     {
-        return $this->_stats;
+        return $this->stats;
     }
-
 }

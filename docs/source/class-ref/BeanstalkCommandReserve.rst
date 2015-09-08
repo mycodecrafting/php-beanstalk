@@ -1,9 +1,11 @@
-BeanstalkCommandReserve Class Ref
-=================================
+Beanstalk\\Command\\Reserve Class Ref
+=====================================
 
-.. php:class:: BeanstalkCommandReserve
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: Reserve
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: Reserve command
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
@@ -22,10 +24,10 @@ BeanstalkCommandReserve Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandReserve::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandReserve::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandReserve::parseResponse` -- Parse the response for success or failure.
-    * :php:meth:`BeanstalkCommandReserve::returnsData` -- Does the command return data?
+    * :php:meth:`Reserve::__construct` -- Constructor
+    * :php:meth:`Reserve::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`Reserve::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`Reserve::returnsData` -- Does the command return data?
 
 .. php:method:: __construct( [ $timeout = null ] )
 
@@ -42,11 +44,11 @@ BeanstalkCommandReserve Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
-    :returns: *BeanstalkJob*
-    :throws: *BeanstalkException* When trying to reserve another job and the TTR of the current job ends soon
-    :throws: *BeanstalkException* When the wait timeout exceeded before a job became available
-    :throws: *BeanstalkException* When any other error occurs
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
+    :returns: *\Beanstalk\Job*
+    :throws: *\Beanstalk\Exception* When trying to reserve another job and the TTR of the current job ends soon
+    :throws: *\Beanstalk\Exception* When the wait timeout exceeded before a job became available
+    :throws: *\Beanstalk\Exception* When any other error occurs
 
 .. php:method:: returnsData(  )
 

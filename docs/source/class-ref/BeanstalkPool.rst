@@ -1,32 +1,41 @@
-BeanstalkPool Class Ref
-=======================
+Beanstalk\\Pool Class Ref
+=========================
 
-.. php:class:: BeanstalkPool
+.. php:namespace:: Beanstalk
+
+.. php:class:: Pool
 
     :Description: Beanstalkd connection pool
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
 
+    .. sourcecode:: php
+
+        $beanstalk = (new \Beanstalk\Pool)
+            ->addServer('localhost', 11300)
+            ->useTube('my-tube');
+        $beanstalk->put('Hello World!');
+
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkPool::addServer` -- Add a beanstalkd server to the pool
-    * :php:meth:`BeanstalkPool::close` -- Close all connections in the pool
-    * :php:meth:`BeanstalkPool::connect` -- Establish a connection to all servers in the pool
-    * :php:meth:`BeanstalkPool::getConnections`
-    * :php:meth:`BeanstalkPool::getLastConnection`
-    * :php:meth:`BeanstalkPool::getServers` -- Get the Beanstalkd server addresses in the pool
-    * :php:meth:`BeanstalkPool::getTimeout` -- Get the current connection timeout
-    * :php:meth:`BeanstalkPool::ignoreTube` -- Ignore command
-    * :php:meth:`BeanstalkPool::kick` -- Kick command
-    * :php:meth:`BeanstalkPool::listTubes` -- The list-tubes command returns a list of all existing tubes
-    * :php:meth:`BeanstalkPool::pauseTube` -- The pause-tube command can delay any new job being reserved for a given time
-    * :php:meth:`BeanstalkPool::put` -- The "put" command is for any process that wants to insert a job into the queue
-    * :php:meth:`BeanstalkPool::reserve` -- Reserve command
-    * :php:meth:`BeanstalkPool::setStream` -- Sets the stream class to use for the connections in the pool
-    * :php:meth:`BeanstalkPool::setTimeout` -- Set the connection timeout for attempting to connect to servers in the pool
-    * :php:meth:`BeanstalkPool::stats` -- The stats command gives statistical information about the system as a whole
-    * :php:meth:`BeanstalkPool::useTube` -- Use command
-    * :php:meth:`BeanstalkPool::watchTube` -- Watch command
+    * :php:meth:`Pool::addServer` -- Add a beanstalkd server to the pool
+    * :php:meth:`Pool::close` -- Close all connections in the pool
+    * :php:meth:`Pool::connect` -- Establish a connection to all servers in the pool
+    * :php:meth:`Pool::getConnections`
+    * :php:meth:`Pool::getLastConnection`
+    * :php:meth:`Pool::getServers` -- Get the Beanstalkd server addresses in the pool
+    * :php:meth:`Pool::getTimeout` -- Get the current connection timeout
+    * :php:meth:`Pool::ignoreTube` -- Ignore command
+    * :php:meth:`Pool::kick` -- Kick command
+    * :php:meth:`Pool::listTubes` -- The list-tubes command returns a list of all existing tubes
+    * :php:meth:`Pool::pauseTube` -- The pause-tube command can delay any new job being reserved for a given time
+    * :php:meth:`Pool::put` -- The "put" command is for any process that wants to insert a job into the queue
+    * :php:meth:`Pool::reserve` -- Reserve command
+    * :php:meth:`Pool::setStream` -- Sets the stream class to use for the connections in the pool
+    * :php:meth:`Pool::setTimeout` -- Set the connection timeout for attempting to connect to servers in the pool
+    * :php:meth:`Pool::stats` -- The stats command gives statistical information about the system as a whole
+    * :php:meth:`Pool::useTube` -- Use command
+    * :php:meth:`Pool::watchTube` -- Watch command
 
 .. php:method:: addServer( $host [ , $port = 11300 ] )
 
@@ -88,7 +97,7 @@ BeanstalkPool Class Ref
     :param string $tube: The tube to pause
     :param integer $delay: Number of seconds to wait before reserving any more jobs from the queue
     :returns: *boolean*
-    :throws: *BeanstalkException*
+    :throws: *\Beanstalk\Exception*
 
 .. php:method:: put( $message [ , $priority = 65536 , $delay = 0 , $ttr = 120 ] )
 

@@ -1,7 +1,9 @@
-BeanstalkException Class Ref
-============================
+Beanstalk\\Exception Class Ref
+==============================
 
-.. php:class:: BeanstalkException
+.. php:namespace:: Beanstalk
+
+.. php:class:: Exception
 
     :Extends: :php:class:`Exception`
     :Description: Beanstalk Exceptions
@@ -29,14 +31,14 @@ BeanstalkException Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkException::__construct`
-    * :php:meth:`BeanstalkException::getCodeAsString` -- Get a string representation of a given code
+    * :php:meth:`Exception::__construct`
+    * :php:meth:`Exception::getCodeAsString` -- Get a string representation of a given code
 
 .. php:method:: __construct( $message [ , $code = 0 , $previous = null ] )
 
     :param mixed $message:
     :param mixed $code:
-    :param Exception $previous:
+    :param Beanstalk\Exception $previous:
 
 .. php:method:: getCodeAsString(  )
 

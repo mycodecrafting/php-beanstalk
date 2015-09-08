@@ -1,18 +1,20 @@
-BeanstalkCommandPauseTube Class Ref
-===================================
+Beanstalk\\Command\\PauseTube Class Ref
+=======================================
 
-.. php:class:: BeanstalkCommandPauseTube
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: PauseTube
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: The pause-tube command can delay any new job being reserved for a given time
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandPauseTube::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandPauseTube::getCommand` -- Get the command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandPauseTube::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`PauseTube::__construct` -- Constructor
+    * :php:meth:`PauseTube::getCommand` -- Get the command to send to the beanstalkd server
+    * :php:meth:`PauseTube::parseResponse` -- Parse the response for success or failure.
 
 .. php:method:: __construct( $tube , $delay )
 
@@ -30,9 +32,9 @@ BeanstalkCommandPauseTube Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
     :returns: *boolean* True if command was successful
-    :throws: *BeanstalkException* When the tube does not exist
-    :throws: *BeanstalkException* When any other error occurs
+    :throws: *\Beanstalk\Exception* When the tube does not exist
+    :throws: *\Beanstalk\Exception* When any other error occurs
 
 

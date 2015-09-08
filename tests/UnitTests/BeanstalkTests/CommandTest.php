@@ -3,20 +3,14 @@
 
 namespace UnitTests\BeanstalkTests\CommandTest;
 
-use \PHPUnit_Framework_TestCase;
-use \BeanstalkCommand;
-
-require_once 'PHPUnit/Autoload.php';
-
-require_once dirname(__FILE__) . '/../../../lib/Beanstalk/Command.php';
-require_once dirname(__FILE__) . '/../../../lib/Beanstalk/Connection.php';
+use PHPUnit_Framework_TestCase;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
 
     protected function setUp()
     {
-        $this->command = $this->getMockForAbstractClass('BeanstalkCommand');
+        $this->command = $this->getMockForAbstractClass('Beanstalk\Command');
     }
 
     public function testDefaultsToNotHavingData()

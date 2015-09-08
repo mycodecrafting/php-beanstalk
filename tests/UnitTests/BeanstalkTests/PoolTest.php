@@ -1,20 +1,17 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
-namespace UnitTests\BeanstalkTests\PoolTest;
+namespace Beanstalk\UnitTests\PoolTest;
 
-use \PHPUnit_Framework_TestCase;
-use \BeanstalkPool;
-
-require_once 'PHPUnit/Autoload.php';
-require_once dirname(__FILE__) . '/../../../lib/Beanstalk.php';
+use PHPUnit_Framework_TestCase;
+use Beanstalk\Pool;
 
 class TestCases extends PHPUnit_Framework_TestCase
 {
 
     protected function setUp()
     {
-        $this->pool = new BeanstalkPool();
+        $this->pool = new Pool();
     }
 
     public function testHasNoServersByDefault()
@@ -58,12 +55,12 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testConnectThrowsExceptionWhenAllServersOffline()
     {
-        $this->setExpectedException('BeanstalkException', 'Unknown: Could not establish a connection to any beanstalkd server in the pool.');
+        $this->setExpectedException('\Beanstalk\Exception', 'Unknown: Could not establish a connection to any beanstalkd server in the pool.');
 
         $this->pool->addServer('server1');
         $this->pool->addServer('server2');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamOffline');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamOffline');
         $this->pool->connect();
     }
 
@@ -72,7 +69,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server1');
         $this->pool->addServer('server2');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamOffline');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamOffline');
         $conns = $this->pool->getConnections();
 
         $this->assertInternalType('array', $conns);
@@ -84,7 +81,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server1');
         $this->pool->addServer('server2');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamOnline');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamOnline');
         $conns = $this->pool->getConnections();
 
         $this->assertNotEmpty($conns);
@@ -97,7 +94,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamPutWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamPutWriteCount');
         $this->pool->put('Hello World!');
 
         $conns = $this->pool->getConnections();
@@ -116,10 +113,10 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamPutWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamPutWriteCount');
         $this->pool->put('Hello World!');
 
-        $this->assertInstanceOf('BeanstalkConnection', $this->pool->getLastConnection());
+        $this->assertInstanceOf('Beanstalk\Connection', $this->pool->getLastConnection());
     }
 
     public function testUseSendsToAllConnections()
@@ -128,7 +125,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamUseWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamUseWriteCount');
         $this->pool->useTube('test_tube');
 
         $conns = $this->pool->getConnections();
@@ -147,7 +144,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
         $this->pool->watchTube('test_tube');
 
         $conns = $this->pool->getConnections();
@@ -166,7 +163,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
         $this->pool->ignoreTube('test_tube');
 
         $conns = $this->pool->getConnections();
@@ -185,7 +182,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamReserveWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamReserveWriteCount');
         $this->pool->reserve();
 
         $conns = $this->pool->getConnections();
@@ -204,7 +201,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamStatsWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamStatsWriteCount');
         $this->pool->stats();
 
         $conns = $this->pool->getConnections();
@@ -223,7 +220,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamListTubesWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamListTubesWriteCount');
         $this->pool->listTubes();
 
         $conns = $this->pool->getConnections();
@@ -242,7 +239,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamPauseWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamPauseWriteCount');
         $this->pool->pauseTube('test_tube', 30);
 
         $conns = $this->pool->getConnections();
@@ -261,7 +258,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamPauseWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamPauseWriteCount');
         $this->assertTrue($this->pool->pauseTube('test_tube', 30));
     }
 
@@ -271,7 +268,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamKickWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamKickWriteCount');
         $this->pool->kick(5);
 
         $conns = $this->pool->getConnections();
@@ -290,7 +287,7 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->pool->addServer('server2');
         $this->pool->addServer('server3');
 
-        $this->pool->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamKickWriteCount');
+        $this->pool->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamKickWriteCount');
         $this->assertEquals(15, $this->pool->kick(5));
     }
 
@@ -315,7 +312,7 @@ class TestCases extends PHPUnit_Framework_TestCase
     {
         $this->pool->addServer('server1')
                    ->addServer('server2')
-                   ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamOnline')
+                   ->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamOnline')
                    ->setTimeout(10);
 
         foreach ($this->pool->getConnections() as $conn)
@@ -355,27 +352,27 @@ class TestCases extends PHPUnit_Framework_TestCase
     public function testUseTubeReturnsSelf()
     {
         $this->pool->addServer('server1')
-                   ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamUseWriteCount');
+                   ->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamUseWriteCount');
         $this->assertSame($this->pool, $this->pool->useTube('my_tube'));
     }
 
     public function testWatchTubeReturnsSelf()
     {
         $this->pool->addServer('server1')
-                   ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
+                   ->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
         $this->assertSame($this->pool, $this->pool->watchTube('my_tube'));
     }
 
     public function testIgnoreTubeReturnsSelf()
     {
         $this->pool->addServer('server1')
-                   ->setStream('UnitTests\BeanstalkTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
+                   ->setStream('Beanstalk\UnitTests\PoolTest\TestBeanstalkConnectionStreamWatchWriteCount');
         $this->assertSame($this->pool, $this->pool->ignoreTube('other_tube'));
     }
 
 }
 
-class TestBeanstalkConnectionStreamOffline implements \BeanstalkConnectionStream
+class TestBeanstalkConnectionStreamOffline implements \Beanstalk\Connection\Stream
 {
 
     public function open($host, $port, $timeout)
@@ -409,7 +406,7 @@ class TestBeanstalkConnectionStreamOffline implements \BeanstalkConnectionStream
 
 }
 
-class TestBeanstalkConnectionStreamOnline implements \BeanstalkConnectionStream
+class TestBeanstalkConnectionStreamOnline implements \Beanstalk\Connection\Stream
 {
 
     public function open($host, $port, $timeout)

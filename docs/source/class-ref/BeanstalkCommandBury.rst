@@ -1,9 +1,11 @@
-BeanstalkCommandBury Class Ref
-==============================
+Beanstalk\\Command\\Bury Class Ref
+==================================
 
-.. php:class:: BeanstalkCommandBury
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: Bury
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: Bury command
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
@@ -14,9 +16,9 @@ BeanstalkCommandBury Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandBury::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandBury::getCommand` -- Get the bury command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandBury::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`Bury::__construct` -- Constructor
+    * :php:meth:`Bury::getCommand` -- Get the bury command to send to the beanstalkd server
+    * :php:meth:`Bury::parseResponse` -- Parse the response for success or failure.
 
 .. php:method:: __construct( $id , $priority )
 
@@ -34,9 +36,9 @@ BeanstalkCommandBury Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
     :returns: *boolean* True if command was successful
-    :throws: *BeanstalkException* When the job cannot be found
-    :throws: *BeanstalkException* When any other error occurs
+    :throws: *\Beanstalk\Exception* When the job cannot be found
+    :throws: *\Beanstalk\Exception* When any other error occurs
 
 

@@ -1,8 +1,9 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
+namespace Beanstalk\Connection;
 
-interface BeanstalkConnectionStream
+interface Stream
 {
 
     /**
@@ -51,5 +52,4 @@ interface BeanstalkConnectionStream
      * @return void
      */
     public function close();
-
 }

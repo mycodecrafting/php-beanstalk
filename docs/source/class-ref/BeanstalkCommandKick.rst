@@ -1,9 +1,11 @@
-BeanstalkCommandKick Class Ref
-==============================
+Beanstalk\\Command\\Kick Class Ref
+==================================
 
-.. php:class:: BeanstalkCommandKick
+.. php:namespace:: Beanstalk\Command
 
-    :Extends: :php:class:`BeanstalkCommand`
+.. php:class:: Kick
+
+    :Extends: :php:class:`Beanstalk\\Command`
     :Description: Kick command
     :Author: Joshua Dechant <jdechant@shapeup.com>
 
@@ -14,9 +16,9 @@ BeanstalkCommandKick Class Ref
 
 .. topic:: Class Methods
 
-    * :php:meth:`BeanstalkCommandKick::__construct` -- Constructor
-    * :php:meth:`BeanstalkCommandKick::getCommand` -- Get the delete command to send to the beanstalkd server
-    * :php:meth:`BeanstalkCommandKick::parseResponse` -- Parse the response for success or failure.
+    * :php:meth:`Kick::__construct` -- Constructor
+    * :php:meth:`Kick::getCommand` -- Get the delete command to send to the beanstalkd server
+    * :php:meth:`Kick::parseResponse` -- Parse the response for success or failure.
 
 .. php:method:: __construct( $bound )
 
@@ -33,8 +35,8 @@ BeanstalkCommandKick Class Ref
     :Description: Parse the response for success or failure.
     :param string $response: Response line, i.e, first line in response
     :param string $data: Data recieved with reponse, if any, else null
-    :param BeanstalkConnection $conn: BeanstalkConnection use to send the command
+    :param Beanstalk\Connection $conn: BeanstalkConnection use to send the command
     :returns: *integer* The number of jobs actually kicked
-    :throws: *BeanstalkException* When any error occurs
+    :throws: *\Beanstalk\Exception* When any error occurs
 
 
