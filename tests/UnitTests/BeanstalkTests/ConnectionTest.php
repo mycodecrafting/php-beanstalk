@@ -17,8 +17,20 @@ class TestCases extends PHPUnit_Framework_TestCase
 
     public function testMustPassInstanceOfBeanstalkConnectionStreamToConstructor()
     {
-        $this->setExpectedException('PHPUnit_Framework_Error');
-        $conn = new Connection('server:port');
+        // test for PHP 7, for now
+        if (PHP_VERSION_ID >= 70000) {
+            try {
+                $conn = new Connection('server:port');
+                $this->fail();
+            } catch (\TypeError $e) {
+                $this->assertTrue(true);
+            }
+
+        // PHP 5.x
+        } else {
+            $this->setExpectedException('PHPUnit_Framework_Error');
+            $conn = new Connection('server:port');
+        }
     }
 
     public function testGetStreamReturnsSetStream()
