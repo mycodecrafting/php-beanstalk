@@ -100,7 +100,7 @@ class Job
      * its state as "ready") to be run by any client. It is normally used when the job
      * fails because of a transitory error.
      *
-     * @param  integer            $delay    Number of seconds to wait before putting the job in the ready queue. 
+     * @param  integer            $delay    Number of seconds to wait before putting the job in the ready queue.
      *                                      The job will be in the "delayed" state during this time
      * @param  integer            $priority A new priority to assign to the job
      * @throws BeanstalkException
@@ -123,6 +123,18 @@ class Job
     public function bury($priority = 2048)
     {
         return $this->getConnection()->bury($this->getId(), $priority);
+    }
+
+    /**
+     * Kick the job
+     *
+     * The kick command puts a buried job back to the ready state.
+     * @return boolean Returns true if job was successfully kicked.
+     * @throws \Beanstalk\Exception  When the job cannot be found or is not in a kickable state.
+     * @throws \Beanstalk\Exception  When any other error occurs
+     */
+    public function kick() {
+      return $this->getConnection()->kickJob($this->getId());
     }
 
     /**

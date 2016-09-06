@@ -16,7 +16,7 @@ use Beanstalk\Exception;
  *
  * @author Joshua Dechant <jdechant@shapeup.com>
  */
-class Kick extends Command
+class KickJob extends Command
 {
 
     protected $id;
