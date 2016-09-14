@@ -228,6 +228,19 @@ class TestCases extends PHPUnit_Framework_TestCase
         $this->assertEquals(4, $this->conn->kick(4));
     }
 
+    public function testKickJobWritesToStream()
+    {
+        $this->stream->expects($this->once())
+                     ->method('write')
+                     ->with($this->equalTo("kick-job 12345\r\n"));
+
+        $this->stream->expects($this->once())
+                     ->method('readLine')
+                     ->will($this->returnValue('KICKED'));
+
+        $this->assertEquals(true, $this->conn->kickJob(12345));
+    }
+
     public function testPeekWritesToStream()
     {
         $this->stream->expects($this->once())

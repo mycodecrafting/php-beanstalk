@@ -13,7 +13,7 @@ class TestCases extends PHPUnit_Framework_TestCase
     {
         $this->conn = $this->getMock(
             'Beanstalk\Connection',
-            array('connect', 'delete', 'touch', 'release', 'bury', 'statsJob'),
+            array('connect', 'delete', 'touch', 'release', 'bury', 'kickJob', 'statsJob'),
             array('localhost:11300', $this->getMock('Beanstalk\Connection\Stream'))
         );
     }
@@ -124,6 +124,16 @@ class TestCases extends PHPUnit_Framework_TestCase
 
         $job = new Job($this->conn, 8867, '{"content":"Hello World!"}');
         $this->assertTrue($job->bury(65840));
+    }
+
+    public function testCanKickBuriedJob() {
+      $this->conn->expects($this->once())
+        ->method('kickJob')
+        ->with($this->equalTo(1234))
+        ->will($this->returnValue(true));
+
+      $job = new Job($this->conn, 1234, '{"content":"Hello World!"}');
+      $this->assertTrue($job->kick());
     }
 
     public function testCanGetJobStats()

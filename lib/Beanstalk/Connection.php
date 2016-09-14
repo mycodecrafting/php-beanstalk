@@ -271,6 +271,19 @@ class Connection
     }
 
     /**
+     * Kick Job command
+     *
+     * The kick job command kicks a single job from buried back to ready state.
+     *
+     * @param  integer $id Id of the job to kick.
+     * @return boolean Returns true if the job was successfully kicked.
+     */
+    public function kickJob($id)
+    {
+        return $this->dispatch(new Command\KickJob($id));
+    }
+
+    /**
      * Return job $id
      *
      * @param  integer              $id Id of job to return
